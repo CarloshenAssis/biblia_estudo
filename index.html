@@ -206,6 +206,33 @@
     margin-bottom: 8px;
   }
 
+  .comment-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
+  button.comment-tab {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 7px 14px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: var(--paper-deep);
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  button.comment-tab:hover { border-color: var(--gold); }
+  button.comment-tab.active {
+    background: var(--rubric);
+    border-color: var(--rubric);
+    color: #FFF9EE;
+  }
+
   .comment-text {
     font-family: 'Source Serif 4', serif;
     font-style: italic;
@@ -215,11 +242,22 @@
   }
 
   .comment-text:empty::before {
-    content: "— sem comentário para este versículo —";
+    content: "— sem comentário para este versículo nesta fonte —";
     font-style: normal;
     color: var(--ink-soft);
     opacity: 0.6;
     font-size: 0.85rem;
+  }
+
+  .ap-note {
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .ap-note:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
   }
 
   .empty-state, .loading-state {
@@ -515,12 +553,30 @@ async function loadVerse(book, chapter, verse, syncSelects = true) {
       return;
     }
     current = rows[0];
-    renderVerse(current);
+    await renderVerse(current);
     if (syncSelects) await syncSelectorsToCurrent();
   } catch (e) {
     renderEmpty("Erro ao buscar. Confira sua conexão.");
   }
 }
+
+async function fetchApNotes(book, chapter, verse) {
+  try {
+    const rows = await sb(`notes_aplicacao_pessoal?book=eq.${encodeURIComponent(book)}&chapter=eq.${chapter}&verse=eq.${verse}&select=comment`);
+    return rows.map(r => r.comment);
+  } catch (e) {
+    return [];
+  }
+}
+
+function switchCommentTab(tab) {
+  document.querySelectorAll('.comment-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  const tabExpositor = document.getElementById('tabExpositor');
+  const tabAp = document.getElementById('tabAp');
+  if (tabExpositor) tabExpositor.style.display = tab === 'expositor' ? '' : 'none';
+  if (tabAp) tabAp.style.display = tab === 'ap' ? '' : 'none';
+}
+window.switchCommentTab = switchCommentTab;
 
 function fillSelect(select, items, selectedValue) {
   select.innerHTML = items.map(it =>
@@ -610,7 +666,7 @@ async function findAdjacent(direction) {
   }
   if (candidates.length > 0) {
     current = candidates[0];
-    renderVerse(current);
+    await renderVerse(current);
     await syncSelectorsToCurrent();
   }
 }
@@ -619,8 +675,10 @@ function escapeHtml(s) {
   return (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-function renderVerse(v) {
+async function renderVerse(v) {
   const area = document.getElementById('mainArea');
+  const apNotes = await fetchApNotes(v.book, v.chapter, v.verse);
+  const apHtml = apNotes.map(c => `<div class="ap-note">${escapeHtml(c)}</div>`).join('');
   area.innerHTML = `
     <div class="card">
       <div class="ref-row">
@@ -629,7 +687,16 @@ function renderVerse(v) {
       </div>
       <div class="verse-text">${escapeHtml(v.text)}</div>
       <div class="comment-label">Comentário</div>
-      <div class="comment-text">${escapeHtml(v.comment)}</div>
+      <div class="comment-tabs">
+        <button class="comment-tab active" data-tab="expositor" onclick="switchCommentTab('expositor')">Expositor</button>
+        <button class="comment-tab" data-tab="ap" onclick="switchCommentTab('ap')">Aplicação Pessoal</button>
+      </div>
+      <div id="tabExpositor" class="comment-panel">
+        <div class="comment-text">${escapeHtml(v.comment)}</div>
+      </div>
+      <div id="tabAp" class="comment-panel" style="display:none;">
+        ${apHtml || '<div class="comment-text"></div>'}
+      </div>
     </div>
     <div class="nav-row">
       <button class="nav-btn" onclick="findAdjacent('prev')">◂ Anterior</button>
@@ -657,10 +724,10 @@ function renderResultsList(rows, query) {
   area.innerHTML = `<div class="results-list">${items}</div>`;
 }
 
-function selectResult(row) {
+async function selectResult(row) {
   current = row;
-  renderVerse(current);
-  syncSelectorsToCurrent();
+  await renderVerse(current);
+  await syncSelectorsToCurrent();
 }
 window.selectResult = selectResult;
 
