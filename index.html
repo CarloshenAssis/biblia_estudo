@@ -59,6 +59,23 @@
     color: var(--rubric);
   }
 
+  .favorites-link {
+    position: absolute;
+    top: 2px;
+    right: 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--gold);
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .favorites-link:hover { border-color: var(--gold); background: var(--paper-deep); }
+
   .brand small {
     display: block;
     font-family: 'Inter', sans-serif;
@@ -206,6 +223,55 @@
     margin-bottom: 8px;
   }
 
+  .ref-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  button.fav-btn {
+    font-size: 1.3rem;
+    line-height: 1;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--gold);
+    padding: 0;
+    transition: transform 0.15s ease;
+  }
+  button.fav-btn:hover { transform: scale(1.15); }
+  button.fav-btn.active { color: var(--rubric); }
+
+  .ap-range {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    font-style: normal;
+    margin-bottom: 6px;
+  }
+
+  .favorite-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .favorite-item > div:first-child { flex: 1; min-width: 0; cursor: pointer; }
+  button.unfav-btn {
+    font-family: 'Inter', sans-serif;
+    background: none;
+    border: none;
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    flex-shrink: 0;
+  }
+  button.unfav-btn:hover { color: var(--rubric); }
+
   .comment-tabs {
     display: flex;
     gap: 6px;
@@ -343,6 +409,7 @@
     .nav-row { flex-direction: column; }
     button.nav-btn { width: 100%; }
     .ref-row { flex-direction: column; align-items: flex-start; gap: 6px; }
+    .favorites-link { position: static; display: block; margin: 14px auto 0; width: fit-content; }
   }
 </style>
 </head>
@@ -350,6 +417,7 @@
 <div class="app">
   <header class="top">
     <h1 class="brand">Bíblia do Expositor<small>Leitura &amp; Comentário</small></h1>
+    <button id="favoritesBtn" class="favorites-link" type="button">★ Favoritos</button>
   </header>
 
   <div class="search-box">
@@ -445,73 +513,77 @@ const BOOK_ALIASES = {
 };
 
 const BOOKS = [
-  { value: "GENESIS", label: "Gênesis" },
-  { value: "ÊXODO", label: "Êxodo" },
-  { value: "LEVÍTICO", label: "Levítico" },
-  { value: "NÚMEROS", label: "Números" },
-  { value: "DEUTERONÔMIO", label: "Deuteronômio" },
-  { value: "JOSUÉ", label: "Josué" },
-  { value: "JUÍZES", label: "Juízes" },
-  { value: "RUTE", label: "Rute" },
-  { value: "1 SAMUEL", label: "1 Samuel" },
-  { value: "2 SAMUEL", label: "2 Samuel" },
-  { value: "1 REIS", label: "1 Reis" },
-  { value: "2 REIS", label: "2 Reis" },
-  { value: "1 CRÔNICAS", label: "1 Crônicas" },
-  { value: "2 CRÔNICAS", label: "2 Crônicas" },
-  { value: "ESDRAS", label: "Esdras" },
-  { value: "NEEMIAS", label: "Neemias" },
-  { value: "ESTER", label: "Ester" },
-  { value: "JÓ", label: "Jó" },
-  { value: "SALMOS", label: "Salmos" },
-  { value: "PROVÉRBIOS", label: "Provérbios" },
-  { value: "ECLESIASTES", label: "Eclesiastes" },
-  { value: "CANTARES DE SALOMÃO", label: "Cantares de Salomão" },
-  { value: "ISAÍAS", label: "Isaías" },
-  { value: "JEREMIAS", label: "Jeremias" },
-  { value: "LAMENTAÇÕES DE JEREMIAS", label: "Lamentações de Jeremias" },
-  { value: "EZEQUIEL", label: "Ezequiel" },
-  { value: "DANIEL", label: "Daniel" },
-  { value: "OSÉIAS", label: "Oséias" },
-  { value: "JOEL", label: "Joel" },
-  { value: "AMOS", label: "Amós" },
-  { value: "OBADIAS", label: "Obadias" },
-  { value: "JONAS", label: "Jonas" },
-  { value: "MIQUÉIAS", label: "Miquéias" },
-  { value: "NAUM", label: "Naum" },
-  { value: "HABACUQUE", label: "Habacuque" },
-  { value: "SOFONIAS", label: "Sofonias" },
-  { value: "AGEU", label: "Ageu" },
-  { value: "ZACARIAS", label: "Zacarias" },
-  { value: "MALAQUIAS", label: "Malaquias" },
-  { value: "MATEUS", label: "Mateus" },
-  { value: "MARCOS", label: "Marcos" },
-  { value: "LUCAS", label: "Lucas" },
-  { value: "JOÃO", label: "João" },
-  { value: "ATOS DOS APÓSTOLOS", label: "Atos dos Apóstolos" },
-  { value: "ROMANOS", label: "Romanos" },
-  { value: "1 CORÍNTIOS", label: "1 Coríntios" },
-  { value: "2 CORÍNTIOS", label: "2 Coríntios" },
-  { value: "GÁLATAS", label: "Gálatas" },
-  { value: "EFÉSIOS", label: "Efésios" },
-  { value: "FILIPENSES", label: "Filipenses" },
-  { value: "COLOSSENSES", label: "Colossenses" },
-  { value: "1 TESSALONICENSES", label: "1 Tessalonicenses" },
-  { value: "2 TESSALONICENSES", label: "2 Tessalonicenses" },
-  { value: "1 TIMÓTEO", label: "1 Timóteo" },
-  { value: "2 TIMÓTEO", label: "2 Timóteo" },
-  { value: "TITO", label: "Tito" },
-  { value: "FILEMON", label: "Filemom" },
-  { value: "HEBREUS", label: "Hebreus" },
-  { value: "TIAGO", label: "Tiago" },
-  { value: "1 PEDRO", label: "1 Pedro" },
-  { value: "2 PEDRO", label: "2 Pedro" },
-  { value: "1 JOÃO", label: "1 João" },
-  { value: "2 JOÃO", label: "2 João" },
-  { value: "3 JOÃO", label: "3 João" },
-  { value: "JUDAS", label: "Judas" },
-  { value: "APOCALIPSE", label: "Apocalipse" }
+  { value: "GENESIS", label: "Gênesis", slug: "genesis" },
+  { value: "ÊXODO", label: "Êxodo", slug: "exodo" },
+  { value: "LEVÍTICO", label: "Levítico", slug: "levitico" },
+  { value: "NÚMEROS", label: "Números", slug: "numeros" },
+  { value: "DEUTERONÔMIO", label: "Deuteronômio", slug: "deuteronomio" },
+  { value: "JOSUÉ", label: "Josué", slug: "josue" },
+  { value: "JUÍZES", label: "Juízes", slug: "juizes" },
+  { value: "RUTE", label: "Rute", slug: "rute" },
+  { value: "1 SAMUEL", label: "1 Samuel", slug: "1-samuel" },
+  { value: "2 SAMUEL", label: "2 Samuel", slug: "2-samuel" },
+  { value: "1 REIS", label: "1 Reis", slug: "1-reis" },
+  { value: "2 REIS", label: "2 Reis", slug: "2-reis" },
+  { value: "1 CRÔNICAS", label: "1 Crônicas", slug: "1-cronicas" },
+  { value: "2 CRÔNICAS", label: "2 Crônicas", slug: "2-cronicas" },
+  { value: "ESDRAS", label: "Esdras", slug: "esdras" },
+  { value: "NEEMIAS", label: "Neemias", slug: "neemias" },
+  { value: "ESTER", label: "Ester", slug: "ester" },
+  { value: "JÓ", label: "Jó", slug: "jo" },
+  { value: "SALMOS", label: "Salmos", slug: "salmos" },
+  { value: "PROVÉRBIOS", label: "Provérbios", slug: "proverbios" },
+  { value: "ECLESIASTES", label: "Eclesiastes", slug: "eclesiastes" },
+  { value: "CANTARES DE SALOMÃO", label: "Cantares de Salomão", slug: "cantares-de-salomao" },
+  { value: "ISAÍAS", label: "Isaías", slug: "isaias" },
+  { value: "JEREMIAS", label: "Jeremias", slug: "jeremias" },
+  { value: "LAMENTAÇÕES DE JEREMIAS", label: "Lamentações de Jeremias", slug: "lamentacoes-de-jeremias" },
+  { value: "EZEQUIEL", label: "Ezequiel", slug: "ezequiel" },
+  { value: "DANIEL", label: "Daniel", slug: "daniel" },
+  { value: "OSÉIAS", label: "Oséias", slug: "oseias" },
+  { value: "JOEL", label: "Joel", slug: "joel" },
+  { value: "AMOS", label: "Amós", slug: "amos" },
+  { value: "OBADIAS", label: "Obadias", slug: "obadias" },
+  { value: "JONAS", label: "Jonas", slug: "jonas" },
+  { value: "MIQUÉIAS", label: "Miquéias", slug: "miqueias" },
+  { value: "NAUM", label: "Naum", slug: "naum" },
+  { value: "HABACUQUE", label: "Habacuque", slug: "habacuque" },
+  { value: "SOFONIAS", label: "Sofonias", slug: "sofonias" },
+  { value: "AGEU", label: "Ageu", slug: "ageu" },
+  { value: "ZACARIAS", label: "Zacarias", slug: "zacarias" },
+  { value: "MALAQUIAS", label: "Malaquias", slug: "malaquias" },
+  { value: "MATEUS", label: "Mateus", slug: "mateus" },
+  { value: "MARCOS", label: "Marcos", slug: "marcos" },
+  { value: "LUCAS", label: "Lucas", slug: "lucas" },
+  { value: "JOÃO", label: "João", slug: "joao" },
+  { value: "ATOS DOS APÓSTOLOS", label: "Atos dos Apóstolos", slug: "atos" },
+  { value: "ROMANOS", label: "Romanos", slug: "romanos" },
+  { value: "1 CORÍNTIOS", label: "1 Coríntios", slug: "1-corintios" },
+  { value: "2 CORÍNTIOS", label: "2 Coríntios", slug: "2-corintios" },
+  { value: "GÁLATAS", label: "Gálatas", slug: "galatas" },
+  { value: "EFÉSIOS", label: "Efésios", slug: "efesios" },
+  { value: "FILIPENSES", label: "Filipenses", slug: "filipenses" },
+  { value: "COLOSSENSES", label: "Colossenses", slug: "colossenses" },
+  { value: "1 TESSALONICENSES", label: "1 Tessalonicenses", slug: "1-tessalonicenses" },
+  { value: "2 TESSALONICENSES", label: "2 Tessalonicenses", slug: "2-tessalonicenses" },
+  { value: "1 TIMÓTEO", label: "1 Timóteo", slug: "1-timoteo" },
+  { value: "2 TIMÓTEO", label: "2 Timóteo", slug: "2-timoteo" },
+  { value: "TITO", label: "Tito", slug: "tito" },
+  { value: "FILEMON", label: "Filemom", slug: "filemom" },
+  { value: "HEBREUS", label: "Hebreus", slug: "hebreus" },
+  { value: "TIAGO", label: "Tiago", slug: "tiago" },
+  { value: "1 PEDRO", label: "1 Pedro", slug: "1-pedro" },
+  { value: "2 PEDRO", label: "2 Pedro", slug: "2-pedro" },
+  { value: "1 JOÃO", label: "1 João", slug: "1-joao" },
+  { value: "2 JOÃO", label: "2 João", slug: "2-joao" },
+  { value: "3 JOÃO", label: "3 João", slug: "3-joao" },
+  { value: "JUDAS", label: "Judas", slug: "judas" },
+  { value: "APOCALIPSE", label: "Apocalipse", slug: "apocalipse" }
 ];
+
+const SLUG_TO_BOOK = Object.fromEntries(BOOKS.map(b => [b.slug, b.value]));
+const BOOK_TO_SLUG = Object.fromEntries(BOOKS.map(b => [b.value, b.slug]));
+const BOOK_TO_LABEL = Object.fromEntries(BOOKS.map(b => [b.value, b.label]));
 
 let current = null; // {book, book_order, chapter, verse}
 let suppressSelectEvents = false;
@@ -519,6 +591,20 @@ let suppressSelectEvents = false;
 async function sb(path) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
     headers: { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` }
+  });
+  if (!res.ok) throw new Error("Erro na consulta");
+  return res.json();
+}
+
+async function rpc(name, params) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${name}`, {
+    method: 'POST',
+    headers: {
+      apikey: ANON_KEY,
+      Authorization: `Bearer ${ANON_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(params)
   });
   if (!res.ok) throw new Error("Erro na consulta");
   return res.json();
@@ -539,7 +625,7 @@ function parseReference(query) {
   return { book, chapter: parseInt(m[2]), verse: m[3] ? parseInt(m[3]) : 1 };
 }
 
-async function loadVerse(book, chapter, verse, syncSelects = true) {
+async function loadVerse(book, chapter, verse, syncSelects = true, historyMode = 'push') {
   const area = document.getElementById('mainArea');
   area.innerHTML = `<div class="card"><div class="loading-state">Carregando...</div></div>`;
   try {
@@ -554,19 +640,126 @@ async function loadVerse(book, chapter, verse, syncSelects = true) {
     }
     current = rows[0];
     await renderVerse(current);
+    if (historyMode !== 'none') updateUrl(current, historyMode === 'replace');
     if (syncSelects) await syncSelectorsToCurrent();
   } catch (e) {
     renderEmpty("Erro ao buscar. Confira sua conexão.");
   }
 }
 
-async function fetchApNotes(book, chapter, verse) {
+/* ---------- Favoritos (localStorage) ---------- */
+const FAVORITES_KEY = 'bibliaExpositorFavoritos';
+
+function getFavorites() {
   try {
-    const rows = await sb(`notes_aplicacao_pessoal?book=eq.${encodeURIComponent(book)}&chapter=eq.${chapter}&verse=eq.${verse}&select=comment`);
-    return rows.map(r => r.comment);
+    return JSON.parse(localStorage.getItem(FAVORITES_KEY)) || [];
   } catch (e) {
     return [];
   }
+}
+
+function saveFavorites(list) {
+  localStorage.setItem(FAVORITES_KEY, JSON.stringify(list));
+}
+
+function isFavorite(v) {
+  return getFavorites().some(f => f.book === v.book && f.chapter === v.chapter && f.verse === v.verse);
+}
+
+function handleToggleFavorite() {
+  if (!current) return;
+  const list = getFavorites();
+  const idx = list.findIndex(f => f.book === current.book && f.chapter === current.chapter && f.verse === current.verse);
+  if (idx >= 0) {
+    list.splice(idx, 1);
+  } else {
+    list.unshift({ book: current.book, book_order: current.book_order, chapter: current.chapter, verse: current.verse });
+  }
+  saveFavorites(list);
+  renderVerse(current);
+}
+window.handleToggleFavorite = handleToggleFavorite;
+
+async function showFavorites() {
+  const list = getFavorites();
+  const area = document.getElementById('mainArea');
+  if (list.length === 0) {
+    area.innerHTML = `<div class="card"><div class="empty-state">Nenhum favorito ainda. Toque na estrela ☆ ao lado de um versículo pra salvar.</div></div>`;
+    return;
+  }
+  const sorted = [...list].sort((a, b) => (a.book_order ?? 0) - (b.book_order ?? 0) || a.chapter - b.chapter || a.verse - b.verse);
+  const rows = await Promise.all(sorted.map(f => sb(`verses?book=eq.${encodeURIComponent(f.book)}&chapter=eq.${f.chapter}&verse=eq.${f.verse}&select=*`)));
+  const items = sorted.map((f, i) => {
+    const v = rows[i][0];
+    const label = BOOK_TO_LABEL[f.book] || f.book;
+    const preview = v ? escapeHtml(v.text.slice(0, 120)) + (v.text.length > 120 ? '…' : '') : '<em>versículo não encontrado</em>';
+    return `
+      <div class="result-item favorite-item">
+        <div onclick='selectResult(${JSON.stringify({ book: f.book, book_order: f.book_order, chapter: f.chapter, verse: f.verse, text: v ? v.text : '', comment: v ? v.comment : '' }).replace(/'/g, "&apos;")})'>
+          <div class="r-ref">${escapeHtml(label)} ${f.chapter}:${f.verse}</div>
+          <div class="r-text">${preview}</div>
+        </div>
+        <button class="unfav-btn" onclick='removeFavorite(${JSON.stringify(f).replace(/'/g, "&apos;")})' aria-label="Remover dos favoritos">✕</button>
+      </div>
+    `;
+  }).join('');
+  area.innerHTML = `<div class="results-list">${items}</div>`;
+}
+window.showFavorites = showFavorites;
+
+function removeFavorite(f) {
+  const list = getFavorites().filter(x => !(x.book === f.book && x.chapter === f.chapter && x.verse === f.verse));
+  saveFavorites(list);
+  showFavorites();
+}
+window.removeFavorite = removeFavorite;
+
+/* ---------- URLs amigáveis ---------- */
+function pathFor(v) {
+  const slug = BOOK_TO_SLUG[v.book] || v.book.toLowerCase();
+  return `/${slug}/${v.chapter}/${v.verse}`;
+}
+
+function updateUrl(v, replace = false) {
+  const path = pathFor(v);
+  if (location.pathname === path) return;
+  const state = { book: v.book, chapter: v.chapter, verse: v.verse };
+  if (replace) history.replaceState(state, '', path);
+  else history.pushState(state, '', path);
+}
+
+function parsePathReference() {
+  const parts = location.pathname.split('/').filter(Boolean);
+  if (parts.length < 2) return null;
+  const book = SLUG_TO_BOOK[parts[0].toLowerCase()];
+  if (!book) return null;
+  const chapter = parseInt(parts[1], 10);
+  if (!chapter || isNaN(chapter)) return null;
+  const verse = parts[2] ? parseInt(parts[2], 10) : 1;
+  return { book, chapter, verse: isNaN(verse) ? 1 : verse };
+}
+
+window.addEventListener('popstate', () => {
+  const ref = parsePathReference();
+  if (ref) loadVerse(ref.book, ref.chapter, ref.verse, true, 'none');
+});
+
+async function fetchApNotes(book, chapter, verse) {
+  try {
+    return await rpc('get_ap_notes', { p_book: book, p_chapter: chapter, p_verse: verse });
+  } catch (e) {
+    return [];
+  }
+}
+
+function apRangeLabel(book, note) {
+  const single = note.chapter_start === note.chapter_end && note.verse_start === note.verse_end;
+  if (single) return '';
+  const label = BOOK_TO_LABEL[book] || book;
+  if (note.chapter_start === note.chapter_end) {
+    return `Aplica-se a ${label} ${note.chapter_start}:${note.verse_start}–${note.verse_end}`;
+  }
+  return `Aplica-se a ${label} ${note.chapter_start}:${note.verse_start}–${note.chapter_end}:${note.verse_end}`;
 }
 
 function switchCommentTab(tab) {
@@ -667,6 +860,7 @@ async function findAdjacent(direction) {
   if (candidates.length > 0) {
     current = candidates[0];
     await renderVerse(current);
+    updateUrl(current);
     await syncSelectorsToCurrent();
   }
 }
@@ -678,11 +872,20 @@ function escapeHtml(s) {
 async function renderVerse(v) {
   const area = document.getElementById('mainArea');
   const apNotes = await fetchApNotes(v.book, v.chapter, v.verse);
-  const apHtml = apNotes.map(c => `<div class="ap-note">${escapeHtml(c)}</div>`).join('');
+  const apHtml = apNotes.map(n => {
+    const label = apRangeLabel(v.book, n);
+    const tag = label ? `<div class="ap-range">${escapeHtml(label)}</div>` : '';
+    return `<div class="ap-note">${tag}${escapeHtml(n.comment)}</div>`;
+  }).join('');
+  const refLabel = BOOK_TO_LABEL[v.book] || v.book;
+  const fav = isFavorite(v);
   area.innerHTML = `
     <div class="card">
       <div class="ref-row">
-        <div class="ref">${escapeHtml(v.book.charAt(0) + v.book.slice(1).toLowerCase())} ${v.chapter}:${v.verse}</div>
+        <div class="ref-group">
+          <button class="fav-btn${fav ? ' active' : ''}" onclick="handleToggleFavorite()" aria-label="Favoritar" aria-pressed="${fav}">${fav ? '★' : '☆'}</button>
+          <div class="ref">${escapeHtml(refLabel)} ${v.chapter}:${v.verse}</div>
+        </div>
         <div class="source-tag">Expositor</div>
       </div>
       <div class="verse-text">${escapeHtml(v.text)}</div>
@@ -717,7 +920,7 @@ function renderResultsList(rows, query) {
   }
   const items = rows.map(r => `
     <div class="result-item" onclick='selectResult(${JSON.stringify(r).replace(/'/g, "&apos;")})'>
-      <div class="r-ref">${escapeHtml(r.book.charAt(0) + r.book.slice(1).toLowerCase())} ${r.chapter}:${r.verse}</div>
+      <div class="r-ref">${escapeHtml(BOOK_TO_LABEL[r.book] || r.book)} ${r.chapter}:${r.verse}</div>
       <div class="r-text">${escapeHtml(r.text.slice(0, 140))}${r.text.length > 140 ? '…' : ''}</div>
     </div>
   `).join("");
@@ -727,6 +930,7 @@ function renderResultsList(rows, query) {
 async function selectResult(row) {
   current = row;
   await renderVerse(current);
+  updateUrl(current);
   await syncSelectorsToCurrent();
 }
 window.selectResult = selectResult;
@@ -741,15 +945,20 @@ async function handleSearch() {
     return;
   }
 
-  // keyword search
+  // keyword search — full-text (radical de palavra, relevância) via RPC, com fallback pra ilike
   const area = document.getElementById('mainArea');
   area.innerHTML = `<div class="card"><div class="loading-state">Buscando...</div></div>`;
   try {
-    const encoded = encodeURIComponent(`%${query}%`);
-    const rows = await sb(`verses?text=ilike.${encoded}&order=book_order.asc,chapter.asc,verse.asc&limit=30&select=*`);
+    const rows = await rpc('search_verses', { query });
     renderResultsList(rows, query);
   } catch (e) {
-    renderEmpty("Erro na busca por palavra-chave.");
+    try {
+      const encoded = encodeURIComponent(`%${query}%`);
+      const rows = await sb(`verses?text=ilike.${encoded}&order=book_order.asc,chapter.asc,verse.asc&limit=30&select=*`);
+      renderResultsList(rows, query);
+    } catch (e2) {
+      renderEmpty("Erro na busca por palavra-chave.");
+    }
   }
 }
 
@@ -760,10 +969,16 @@ document.getElementById('searchInput').addEventListener('keydown', (e) => {
 document.getElementById('bookSelect').addEventListener('change', onBookSelectChange);
 document.getElementById('chapterSelect').addEventListener('change', onChapterSelectChange);
 document.getElementById('verseSelect').addEventListener('change', onVerseSelectChange);
+document.getElementById('favoritesBtn').addEventListener('click', showFavorites);
 
-// initial load: Genesis 1:1
+// carga inicial: usa a URL se apontar pra uma referência válida, senão Gênesis 1:1
 populateBookSelect();
-loadVerse("GENESIS", 1, 1);
+const initialRef = parsePathReference();
+if (initialRef) {
+  loadVerse(initialRef.book, initialRef.chapter, initialRef.verse, true, 'replace');
+} else {
+  loadVerse("GENESIS", 1, 1, true, 'replace');
+}
 </script>
 </body>
 </html>

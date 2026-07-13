@@ -4,6 +4,8 @@ Complementa o `RELATORIO_PROJETO.md` (Bíblia do Expositor). Este documento cobr
 **Bíblia de Estudo Aplicação Pessoal** (Life Application Study Bible, CPAD/Tyndale House, 2003),
 para uso no repositório `bibliaexpositor.vercel.app` via Claude Code.
 
+**Status: 66 de 66 livros extraídos** (correção de bug aplicada — ver seção 3.1).
+
 ## 1. Diferença em relação ao Expositor
 
 O arquivo `Biblia_de_Estudo_do_Expositor.pdf` foi gerado digitalmente (Word), com texto e comentário
@@ -21,45 +23,42 @@ armazenado na tabela `verses` (vindo do Expositor).
 ## 2. Método de extração
 
 - PyMuPDF (`fitz`), lendo blocos de texto por página (`page.get_text("dict")`).
-- **Identificação do livro atual**: cada página tem um cabeçalho (ex: "GÊNESIS 24", "213NÚMEROS 24")
-  misturando nome do livro (com variações de OCR: "GÊNESIS"/"GENESIS"/"GÊNESiS") e número de página.
-  Comparação fuzzy (`difflib.SequenceMatcher`) contra a lista canônica de 66 livros, com ponteiro
-  sequencial (mesma lógica usada no Expositor) e janela de lookahead de 3 livros.
+- **Identificação do livro atual**: cada página tem um cabeçalho (ex: "GÊNESIS 24", "4192 SAMUEL 2")
+  misturando nome do livro, um dígito de livro (1/2/3, quando aplicável) e o número de página — tudo
+  concatenado sem separador consistente pelo OCR.
 - **Notas por versículo**: regex identifica blocos que começam com `capítulo.versículo`
   (ex: `1.1`, `1.3—2.7`, `24.15`), tratando também variações como "ss" (e os seguintes). Faixas de
   versículos (ex: `1.3—2.7`) são expandidas — a mesma nota é replicada para cada versículo do intervalo
-  (limitado a 40 versículos por seguraça).
+  (limitado a 40 versículos por segurança).
 - Blocos que não começam com uma referência numérica (caixas temáticas, notas de rodapé com `*`,
   cabeçalhos) são automaticamente ignorados pelo regex.
 
-## 3. Resultado desta extração
+### 3.1 Bug encontrado e corrigido (livros numerados)
 
-- **4.098 notas** extraídas, cobrindo **55 dos 66 livros**.
+Na primeira passada, a normalização do cabeçalho removia **todos** os dígitos pra isolar o nome do
+livro do número de página — o que também apagava o dígito que diferencia "2 Samuel" de "1 Samuel",
+etc. Isso travava o ponteiro sequencial de detecção de livro no livro anterior, e como o efeito é
+cascata (o "Judas" e "Apocalipse", que nem têm dígito, ficaram fora da janela de busca por tabela
+porque o ponteiro nunca chegou perto deles), 11 livros no total saíram prejudicados: 2 Samuel, 2 Reis,
+2 Crônicas, 2 Coríntios, 2 Tessalonicenses, 2 Timóteo, 2 Pedro, 2 João, 3 João, Judas e Apocalipse.
 
-### Livros com boa cobertura
-Gênesis, Êxodo, Levítico, Números, Deuteronômio, Josué, Juízes, Rute, 1 Samuel, 1 Reis, 1 Crônicas,
-Esdras, Neemias, Ester, Jó, Salmos, Provérbios, Eclesiastes, Cantares de Salomão, Isaías, Jeremias,
-Lamentações de Jeremias, Ezequiel, Daniel, Oséias, Joel, Amós, Obadias, Jonas, Miquéias, Naum,
-Habacuque, Sofonias, Ageu, Zacarias, Malaquias, Mateus, Marcos, Lucas, João, Atos dos Apóstolos,
-Romanos, 1 Coríntios, Gálatas, Efésios, Filipenses, Colossenses, 1 Tessalonicenses, 1 Timóteo, Tito,
-Filemon, Hebreus, Tiago, 1 Pedro, 1 João.
+**Correção aplicada:** em vez de remover todos os dígitos, o parser agora verifica se há exatamente
+um dígito (1, 2 ou 3) separado do nome do livro por um espaço (ex: `"2 SAMUEL"` → dígito `2`), o que
+diferencia isso de dígitos de paginação que tocam a letra diretamente sem espaço (ex: `"213NÚMEROS"`
+→ não é dígito de livro, é número de página). O casamento de livro agora exige que esse dígito bata
+exatamente com o esperado (nunca confunde "1 Samuel" com "2 Samuel"), e o limiar de confiança do
+fuzzy-match subiu de 0.6 para 0.78 pra evitar que nomes curtos colidam por acidente quando o OCR erra
+um dígito isolado (ex.: uma página de "1 Timóteo" onde o OCR leu "1" como "7" quase enganou o parser
+pra pular direto pra "Tito").
 
-### Livros que ficaram de fora (bug conhecido, não corrigido nesta passada)
-**2 Samuel, 2 Reis, 2 Crônicas, 2 Coríntios, 2 Tessalonicenses, 2 Timóteo, 2 Pedro, 2 João, 3 João,
-Judas, Apocalipse.**
+Depois da correção: **4.067 notas**, 66 de 66 livros, todos com contagens plausíveis (ex: 1 Timóteo 27,
+2 Timóteo 13, Tito 13 — coerentes entre si; Apocalipse 223, coerente com ser um livro longo e muito
+comentado).
 
-**Causa raiz:** a normalização do cabeçalho da página remove dígitos (pra isolar o nome do livro do
-número da página), o que também apaga o "2"/"3" que diferencia "2 Samuel" de "1 Samuel", etc. O
-ponteiro sequencial então nunca reconhece a transição para o livro numerado seguinte, e o conteúdo
-dele acaba sendo atribuído ao livro anterior (por isso "1 JOÃO" aparece com 314 notas — bem mais que o
-esperado — e "COLOSSENSES" com 132: absorveram o conteúdo dos livros seguintes que não foram
-detectados).
+## 3. Resultado final
 
-**Como corrigir, se for reprocessar:** diferenciar os cabeçalhos mantendo um dígito isolado no início
-do texto do cabeçalho (antes de remover o restante dos números, que são de paginação), ou usar a
-contagem de capítulos de cada livro como sinal auxiliar (ex: se a nota referencia capítulo 1 de novo
-mas o livro atual já tinha chego no capítulo 4, é sinal de troca de livro). Precisa do PDF original de
-novo para reprocessar — ele não está mais disponível no ambiente desta conversa.
+Todos os 66 livros têm cobertura. Contagem de notas por livro está no arquivo de dados; nenhum livro
+ficou zerado.
 
 ## 4. Schema da nova tabela
 
@@ -88,15 +87,15 @@ versículo.
 
 ## 5. Arquivos entregues
 
-- `aplicacao_pessoal_dados.json` — as 4.098 notas extraídas
-- `importar_aplicacao_pessoal.py` — script de importação local (mesmo padrão do Expositor)
+- `aplicacao_pessoal_dados.json` — as 4.067 notas extraídas (versão corrigida, 66/66 livros)
+- `importar_aplicacao_pessoal.py` — script de importação local (mesmo padrão do Expositor; limpa
+  automaticamente qualquer dado de uma importação parcial anterior antes de reimportar)
 
 ## 6. Próximos passos sugeridos pro Claude Code
 
-1. Rodar a criação da tabela (seção 4) no Supabase.
-2. Rodar `importar_aplicacao_pessoal.py` localmente.
+1. Rodar a criação da tabela (seção 4) no Supabase, se ainda não existir.
+2. Rodar `importar_aplicacao_pessoal.py` localmente (substitui dados antigos automaticamente).
 3. Atualizar o app (`biblia-expositor.html` ou o código do site) para buscar também em
    `notes_aplicacao_pessoal` pelo mesmo `book/chapter/verse` e exibir como uma segunda aba/fonte de
    comentário.
-4. Se quiser os 11 livros que faltaram, reenviar o PDF `BIBLIA_APLICAÇÃO_PESSOAL.pdf` para reprocessar
-   com a correção da seção 3.
+
