@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bíblia do Expositor</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap');
+
+  :root {
+    --paper: #F6F1E6;
+    --paper-deep: #EFE7D6;
+    --ink: #2B2620;
+    --ink-soft: #5B5346;
+    --rubric: #8A2E24;
+    --rubric-soft: #A8493C;
+    --gold: #A6822B;
+    --line: #DCD1B4;
+    --shadow: rgba(43,38,32,0.12);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Serif 4', serif;
+    min-height: 100vh;
+  }
+
+  .app {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 28px 20px 80px;
+  }
+
+  header.top {
+    text-align: center;
+    margin-bottom: 28px;
+    position: relative;
+  }
+
+  header.top::after {
+    content: "";
+    display: block;
+    width: 64px;
+    height: 2px;
+    background: var(--gold);
+    margin: 14px auto 0;
+  }
+
+  h1.brand {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.5rem;
+    letter-spacing: 0.02em;
+    margin: 0;
+    color: var(--rubric);
+  }
+
+  .brand small {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  .search-box {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+
+  input#searchInput {
+    flex: 1;
+    min-width: 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    padding: 13px 16px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    background: #FFFDF8;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s ease;
+    -webkit-appearance: none;
+  }
+  input#searchInput:focus {
+    border-color: var(--gold);
+  }
+
+  button.go {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 0 20px;
+    background: var(--rubric);
+    color: #FFF9EE;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    min-height: 46px;
+  }
+  button.go:hover { background: var(--rubric-soft); }
+
+  .select-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+
+  .select-row select {
+    flex: 1 1 0;
+    min-width: 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    padding: 11px 12px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    background: #FFFDF8;
+    color: var(--ink);
+    outline: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: border-color 0.15s ease;
+  }
+  .select-row select:focus { border-color: var(--gold); }
+  .select-row select:disabled { opacity: 0.5; cursor: default; }
+
+  .select-row select#bookSelect { flex: 1 1 45%; }
+
+  .hint {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    color: var(--ink-soft);
+    text-align: center;
+    margin: -14px 0 22px;
+    opacity: 0.75;
+  }
+
+  .card {
+    background: #FFFDF8;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 30px 32px;
+    box-shadow: 0 2px 12px var(--shadow);
+    min-height: 280px;
+  }
+
+  .ref-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 14px;
+  }
+
+  .ref {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.35rem;
+    color: var(--rubric);
+    letter-spacing: 0.01em;
+  }
+
+  .source-tag {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  .verse-text {
+    font-size: 1.18rem;
+    line-height: 1.7;
+    color: var(--ink);
+    margin-bottom: 22px;
+  }
+
+  .verse-text::first-letter {
+    font-family: 'Fraunces', serif;
+    font-size: 1.9em;
+    font-weight: 600;
+    color: var(--rubric);
+  }
+
+  .comment-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .comment-text {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--rubric-soft);
+  }
+
+  .comment-text:empty::before {
+    content: "— sem comentário para este versículo —";
+    font-style: normal;
+    color: var(--ink-soft);
+    opacity: 0.6;
+    font-size: 0.85rem;
+  }
+
+  .empty-state, .loading-state {
+    font-family: 'Inter', sans-serif;
+    color: var(--ink-soft);
+    text-align: center;
+    padding: 60px 20px;
+    font-size: 0.9rem;
+  }
+
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    gap: 10px;
+  }
+
+  button.nav-btn {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 0.85rem;
+    padding: 11px 18px;
+    background: var(--paper-deep);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    cursor: pointer;
+    flex: 1;
+    transition: all 0.15s ease;
+  }
+  button.nav-btn:hover:not(:disabled) {
+    background: var(--gold);
+    color: #FFF9EE;
+    border-color: var(--gold);
+  }
+  button.nav-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .results-list {
+    margin-top: 8px;
+  }
+  .result-item {
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    margin-bottom: 8px;
+    background: #FFFDF8;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+  }
+  .result-item:hover { border-color: var(--gold); }
+  .result-item .r-ref {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.78rem;
+    color: var(--rubric);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+  .result-item .r-text {
+    font-size: 0.92rem;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 640px) {
+    .app { padding: 20px 14px 60px; }
+  }
+
+  @media (max-width: 480px) {
+    .card { padding: 22px 18px; }
+    .verse-text { font-size: 1.08rem; }
+    .ref { font-size: 1.15rem; }
+    .search-box { flex-wrap: wrap; }
+    input#searchInput { flex: 1 1 100%; }
+    button.go { flex: 1 1 100%; padding: 13px 20px; }
+    .select-row select#bookSelect { flex: 1 1 100%; }
+    .select-row select { flex: 1 1 100%; }
+    .nav-row { flex-direction: column; }
+    button.nav-btn { width: 100%; }
+    .ref-row { flex-direction: column; align-items: flex-start; gap: 6px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <h1 class="brand">Bíblia do Expositor<small>Leitura &amp; Comentário</small></h1>
+  </header>
+
+  <div class="search-box">
+    <input id="searchInput" type="text" placeholder="Ex: João 3:16, Gênesis 1, ou uma palavra..." autocomplete="off">
+    <button class="go" onclick="handleSearch()">Buscar</button>
+  </div>
+  <div class="hint">Digite uma referência (livro capítulo:versículo) ou uma palavra-chave</div>
+
+  <div class="select-row">
+    <select id="bookSelect" aria-label="Livro"></select>
+    <select id="chapterSelect" aria-label="Capítulo" disabled></select>
+    <select id="verseSelect" aria-label="Versículo" disabled></select>
+  </div>
+
+  <div id="mainArea">
+    <div class="card">
+      <div class="loading-state">Carregando...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = "https://hkfmhkvinuahkhdwkgwo.supabase.co";
+const ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhrZm1oa3ZpbnVhaGtoZHdrZ3dvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM5MDkzMTIsImV4cCI6MjA5OTQ4NTMxMn0.ZOUKn8iUcpVRi77ka3d3IfLJc63FPuRGhfolDI2_ESQ";
+
+const BOOK_ALIASES = {
+  "genesis":"GENESIS","gênesis":"GENESIS","gn":"GENESIS",
+  "exodo":"ÊXODO","êxodo":"ÊXODO","ex":"ÊXODO",
+  "levitico":"LEVÍTICO","levítico":"LEVÍTICO","lv":"LEVÍTICO",
+  "numeros":"NÚMEROS","números":"NÚMEROS","nm":"NÚMEROS",
+  "deuteronomio":"DEUTERONÔMIO","deuteronômio":"DEUTERONÔMIO","dt":"DEUTERONÔMIO",
+  "josue":"JOSUÉ","josué":"JOSUÉ","js":"JOSUÉ",
+  "juizes":"JUÍZES","juízes":"JUÍZES","jz":"JUÍZES",
+  "rute":"RUTE","rt":"RUTE",
+  "1samuel":"1 SAMUEL","1 samuel":"1 SAMUEL","1sm":"1 SAMUEL",
+  "2samuel":"2 SAMUEL","2 samuel":"2 SAMUEL","2sm":"2 SAMUEL",
+  "1reis":"1 REIS","1 reis":"1 REIS","1rs":"1 REIS",
+  "2reis":"2 REIS","2 reis":"2 REIS","2rs":"2 REIS",
+  "1cronicas":"1 CRÔNICAS","1 crônicas":"1 CRÔNICAS","1cr":"1 CRÔNICAS",
+  "2cronicas":"2 CRÔNICAS","2 crônicas":"2 CRÔNICAS","2cr":"2 CRÔNICAS",
+  "esdras":"ESDRAS","ed":"ESDRAS",
+  "neemias":"NEEMIAS","ne":"NEEMIAS",
+  "ester":"ESTER","et":"ESTER",
+  "jo":"JÓ","job":"JÓ",
+  "salmos":"SALMOS","sl":"SALMOS","salmo":"SALMOS",
+  "proverbios":"PROVÉRBIOS","provérbios":"PROVÉRBIOS","pv":"PROVÉRBIOS",
+  "eclesiastes":"ECLESIASTES","ec":"ECLESIASTES",
+  "cantares":"CANTARES DE SALOMÃO","cantares de salomao":"CANTARES DE SALOMÃO","ct":"CANTARES DE SALOMÃO",
+  "isaias":"ISAÍAS","isaías":"ISAÍAS","is":"ISAÍAS",
+  "jeremias":"JEREMIAS","jr":"JEREMIAS",
+  "lamentacoes":"LAMENTAÇÕES DE JEREMIAS","lamentações":"LAMENTAÇÕES DE JEREMIAS","lm":"LAMENTAÇÕES DE JEREMIAS",
+  "ezequiel":"EZEQUIEL","ez":"EZEQUIEL",
+  "daniel":"DANIEL","dn":"DANIEL",
+  "oseias":"OSÉIAS","oséias":"OSÉIAS","os":"OSÉIAS",
+  "joel":"JOEL","jl":"JOEL",
+  "amos":"AMOS","am":"AMOS",
+  "obadias":"OBADIAS","ob":"OBADIAS",
+  "jonas":"JONAS","jn":"JONAS",
+  "miqueias":"MIQUÉIAS","miquéias":"MIQUÉIAS","mq":"MIQUÉIAS",
+  "naum":"NAUM","na":"NAUM",
+  "habacuque":"HABACUQUE","hc":"HABACUQUE",
+  "sofonias":"SOFONIAS","sf":"SOFONIAS",
+  "ageu":"AGEU","ag":"AGEU",
+  "zacarias":"ZACARIAS","zc":"ZACARIAS",
+  "malaquias":"MALAQUIAS","ml":"MALAQUIAS",
+  "mateus":"MATEUS","mt":"MATEUS",
+  "marcos":"MARCOS","mc":"MARCOS",
+  "lucas":"LUCAS","lc":"LUCAS",
+  "joao":"JOÃO","joão":"JOÃO",
+  "atos":"ATOS DOS APÓSTOLOS","at":"ATOS DOS APÓSTOLOS",
+  "romanos":"ROMANOS","rm":"ROMANOS",
+  "1corintios":"1 CORÍNTIOS","1 coríntios":"1 CORÍNTIOS","1co":"1 CORÍNTIOS",
+  "2corintios":"2 CORÍNTIOS","2 coríntios":"2 CORÍNTIOS","2co":"2 CORÍNTIOS",
+  "galatas":"GÁLATAS","gálatas":"GÁLATAS","gl":"GÁLATAS",
+  "efesios":"EFÉSIOS","efésios":"EFÉSIOS","ef":"EFÉSIOS",
+  "filipenses":"FILIPENSES","fp":"FILIPENSES",
+  "colossenses":"COLOSSENSES","cl":"COLOSSENSES",
+  "1tessalonicenses":"1 TESSALONICENSES","1ts":"1 TESSALONICENSES",
+  "2tessalonicenses":"2 TESSALONICENSES","2ts":"2 TESSALONICENSES",
+  "1timoteo":"1 TIMÓTEO","1 timóteo":"1 TIMÓTEO","1tm":"1 TIMÓTEO",
+  "2timoteo":"2 TIMÓTEO","2 timóteo":"2 TIMÓTEO","2tm":"2 TIMÓTEO",
+  "tito":"TITO",
+  "filemon":"FILEMON","fm":"FILEMON",
+  "hebreus":"HEBREUS","hb":"HEBREUS",
+  "tiago":"TIAGO","tg":"TIAGO",
+  "1pedro":"1 PEDRO","1pe":"1 PEDRO",
+  "2pedro":"2 PEDRO","2pe":"2 PEDRO",
+  "1joao":"1 JOÃO","1 joão":"1 JOÃO","1jo":"1 JOÃO",
+  "2joao":"2 JOÃO","2 joão":"2 JOÃO","2jo":"2 JOÃO",
+  "3joao":"3 JOÃO","3 joão":"3 JOÃO","3jo":"3 JOÃO",
+  "judas":"JUDAS","jd":"JUDAS",
+  "apocalipse":"APOCALIPSE","ap":"APOCALIPSE"
+};
+
+const BOOKS = [
+  { value: "GENESIS", label: "Gênesis" },
+  { value: "ÊXODO", label: "Êxodo" },
+  { value: "LEVÍTICO", label: "Levítico" },
+  { value: "NÚMEROS", label: "Números" },
+  { value: "DEUTERONÔMIO", label: "Deuteronômio" },
+  { value: "JOSUÉ", label: "Josué" },
+  { value: "JUÍZES", label: "Juízes" },
+  { value: "RUTE", label: "Rute" },
+  { value: "1 SAMUEL", label: "1 Samuel" },
+  { value: "2 SAMUEL", label: "2 Samuel" },
+  { value: "1 REIS", label: "1 Reis" },
+  { value: "2 REIS", label: "2 Reis" },
+  { value: "1 CRÔNICAS", label: "1 Crônicas" },
+  { value: "2 CRÔNICAS", label: "2 Crônicas" },
+  { value: "ESDRAS", label: "Esdras" },
+  { value: "NEEMIAS", label: "Neemias" },
+  { value: "ESTER", label: "Ester" },
+  { value: "JÓ", label: "Jó" },
+  { value: "SALMOS", label: "Salmos" },
+  { value: "PROVÉRBIOS", label: "Provérbios" },
+  { value: "ECLESIASTES", label: "Eclesiastes" },
+  { value: "CANTARES DE SALOMÃO", label: "Cantares de Salomão" },
+  { value: "ISAÍAS", label: "Isaías" },
+  { value: "JEREMIAS", label: "Jeremias" },
+  { value: "LAMENTAÇÕES DE JEREMIAS", label: "Lamentações de Jeremias" },
+  { value: "EZEQUIEL", label: "Ezequiel" },
+  { value: "DANIEL", label: "Daniel" },
+  { value: "OSÉIAS", label: "Oséias" },
+  { value: "JOEL", label: "Joel" },
+  { value: "AMOS", label: "Amós" },
+  { value: "OBADIAS", label: "Obadias" },
+  { value: "JONAS", label: "Jonas" },
+  { value: "MIQUÉIAS", label: "Miquéias" },
+  { value: "NAUM", label: "Naum" },
+  { value: "HABACUQUE", label: "Habacuque" },
+  { value: "SOFONIAS", label: "Sofonias" },
+  { value: "AGEU", label: "Ageu" },
+  { value: "ZACARIAS", label: "Zacarias" },
+  { value: "MALAQUIAS", label: "Malaquias" },
+  { value: "MATEUS", label: "Mateus" },
+  { value: "MARCOS", label: "Marcos" },
+  { value: "LUCAS", label: "Lucas" },
+  { value: "JOÃO", label: "João" },
+  { value: "ATOS DOS APÓSTOLOS", label: "Atos dos Apóstolos" },
+  { value: "ROMANOS", label: "Romanos" },
+  { value: "1 CORÍNTIOS", label: "1 Coríntios" },
+  { value: "2 CORÍNTIOS", label: "2 Coríntios" },
+  { value: "GÁLATAS", label: "Gálatas" },
+  { value: "EFÉSIOS", label: "Efésios" },
+  { value: "FILIPENSES", label: "Filipenses" },
+  { value: "COLOSSENSES", label: "Colossenses" },
+  { value: "1 TESSALONICENSES", label: "1 Tessalonicenses" },
+  { value: "2 TESSALONICENSES", label: "2 Tessalonicenses" },
+  { value: "1 TIMÓTEO", label: "1 Timóteo" },
+  { value: "2 TIMÓTEO", label: "2 Timóteo" },
+  { value: "TITO", label: "Tito" },
+  { value: "FILEMON", label: "Filemom" },
+  { value: "HEBREUS", label: "Hebreus" },
+  { value: "TIAGO", label: "Tiago" },
+  { value: "1 PEDRO", label: "1 Pedro" },
+  { value: "2 PEDRO", label: "2 Pedro" },
+  { value: "1 JOÃO", label: "1 João" },
+  { value: "2 JOÃO", label: "2 João" },
+  { value: "3 JOÃO", label: "3 João" },
+  { value: "JUDAS", label: "Judas" },
+  { value: "APOCALIPSE", label: "Apocalipse" }
+];
+
+let current = null; // {book, book_order, chapter, verse}
+let suppressSelectEvents = false;
+
+async function sb(path) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    headers: { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` }
+  });
+  if (!res.ok) throw new Error("Erro na consulta");
+  return res.json();
+}
+
+function normalize(s) {
+  return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+function parseReference(query) {
+  const q = query.trim();
+  const m = q.match(/^(\d?\s?[a-zA-ZÀ-ú çãõéíóáâêôü]+)\s+(\d+)(?::(\d+))?$/i);
+  if (!m) return null;
+  let bookRaw = normalize(m[1].trim().replace(/\s+/g, ' '));
+  let bookKey = bookRaw.replace(/\s/g, '');
+  let book = BOOK_ALIASES[bookRaw] || BOOK_ALIASES[bookKey];
+  if (!book) return null;
+  return { book, chapter: parseInt(m[2]), verse: m[3] ? parseInt(m[3]) : 1 };
+}
+
+async function loadVerse(book, chapter, verse, syncSelects = true) {
+  const area = document.getElementById('mainArea');
+  area.innerHTML = `<div class="card"><div class="loading-state">Carregando...</div></div>`;
+  try {
+    let rows = await sb(`verses?book=eq.${encodeURIComponent(book)}&chapter=eq.${chapter}&verse=eq.${verse}&select=*`);
+    if (rows.length === 0) {
+      // fallback to nearest verse in chapter
+      rows = await sb(`verses?book=eq.${encodeURIComponent(book)}&chapter=eq.${chapter}&order=verse.asc&limit=1&select=*`);
+    }
+    if (rows.length === 0) {
+      renderEmpty("Referência não encontrada.");
+      return;
+    }
+    current = rows[0];
+    renderVerse(current);
+    if (syncSelects) await syncSelectorsToCurrent();
+  } catch (e) {
+    renderEmpty("Erro ao buscar. Confira sua conexão.");
+  }
+}
+
+function fillSelect(select, items, selectedValue) {
+  select.innerHTML = items.map(it =>
+    `<option value="${it.value}"${String(it.value) === String(selectedValue) ? ' selected' : ''}>${it.label}</option>`
+  ).join('');
+  select.disabled = false;
+}
+
+async function maxOf(field, filters) {
+  const rows = await sb(`verses?${filters}&select=${field}&order=${field}.desc&limit=1`);
+  return rows.length ? rows[0][field] : 1;
+}
+
+function populateBookSelect() {
+  const sel = document.getElementById('bookSelect');
+  fillSelect(sel, BOOKS.map(b => ({ value: b.value, label: b.label })), current ? current.book : BOOKS[0].value);
+}
+
+async function populateChapterSelect(book, selectedChapter) {
+  const sel = document.getElementById('chapterSelect');
+  const maxChapter = await maxOf('chapter', `book=eq.${encodeURIComponent(book)}`);
+  const items = Array.from({ length: maxChapter }, (_, i) => ({ value: i + 1, label: `Cap. ${i + 1}` }));
+  fillSelect(sel, items, selectedChapter);
+}
+
+async function populateVerseSelect(book, chapter, selectedVerse) {
+  const sel = document.getElementById('verseSelect');
+  const maxVerse = await maxOf('verse', `book=eq.${encodeURIComponent(book)}&chapter=eq.${chapter}`);
+  const items = Array.from({ length: maxVerse }, (_, i) => ({ value: i + 1, label: `Vers. ${i + 1}` }));
+  fillSelect(sel, items, selectedVerse);
+}
+
+async function syncSelectorsToCurrent() {
+  if (!current) return;
+  suppressSelectEvents = true;
+  populateBookSelect();
+  await populateChapterSelect(current.book, current.chapter);
+  await populateVerseSelect(current.book, current.chapter, current.verse);
+  suppressSelectEvents = false;
+}
+
+async function onBookSelectChange() {
+  if (suppressSelectEvents) return;
+  const book = document.getElementById('bookSelect').value;
+  await loadVerse(book, 1, 1);
+}
+
+async function onChapterSelectChange() {
+  if (suppressSelectEvents) return;
+  const book = document.getElementById('bookSelect').value;
+  const chapter = parseInt(document.getElementById('chapterSelect').value);
+  await loadVerse(book, chapter, 1);
+}
+
+async function onVerseSelectChange() {
+  if (suppressSelectEvents) return;
+  const book = document.getElementById('bookSelect').value;
+  const chapter = parseInt(document.getElementById('chapterSelect').value);
+  const verse = parseInt(document.getElementById('verseSelect').value);
+  await loadVerse(book, chapter, verse);
+}
+
+async function findAdjacent(direction) {
+  if (!current) return;
+  const area = document.getElementById('mainArea');
+  const order = direction === 'next' ? 'book_order.asc,chapter.asc,verse.asc' : 'book_order.desc,chapter.desc,verse.desc';
+  const op = direction === 'next' ? 'gt' : 'lt';
+  // Build a composite comparison using book_order, chapter, verse tuple emulation via OR logic
+  const bo = current.book_order, ch = current.chapter, vs = current.verse;
+  let candidates = [];
+  if (direction === 'next') {
+    candidates = await sb(`verses?and=(book_order.eq.${bo},chapter.eq.${ch},verse.gt.${vs})&order=verse.asc&limit=1&select=*`);
+    if (candidates.length === 0) {
+      candidates = await sb(`verses?and=(book_order.eq.${bo},chapter.gt.${ch})&order=chapter.asc,verse.asc&limit=1&select=*`);
+    }
+    if (candidates.length === 0) {
+      candidates = await sb(`verses?book_order=gt.${bo}&order=book_order.asc,chapter.asc,verse.asc&limit=1&select=*`);
+    }
+  } else {
+    candidates = await sb(`verses?and=(book_order.eq.${bo},chapter.eq.${ch},verse.lt.${vs})&order=verse.desc&limit=1&select=*`);
+    if (candidates.length === 0) {
+      candidates = await sb(`verses?and=(book_order.eq.${bo},chapter.lt.${ch})&order=chapter.desc,verse.desc&limit=1&select=*`);
+    }
+    if (candidates.length === 0) {
+      candidates = await sb(`verses?book_order=lt.${bo}&order=book_order.desc,chapter.desc,verse.desc&limit=1&select=*`);
+    }
+  }
+  if (candidates.length > 0) {
+    current = candidates[0];
+    renderVerse(current);
+    await syncSelectorsToCurrent();
+  }
+}
+
+function escapeHtml(s) {
+  return (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function renderVerse(v) {
+  const area = document.getElementById('mainArea');
+  area.innerHTML = `
+    <div class="card">
+      <div class="ref-row">
+        <div class="ref">${escapeHtml(v.book.charAt(0) + v.book.slice(1).toLowerCase())} ${v.chapter}:${v.verse}</div>
+        <div class="source-tag">Expositor</div>
+      </div>
+      <div class="verse-text">${escapeHtml(v.text)}</div>
+      <div class="comment-label">Comentário</div>
+      <div class="comment-text">${escapeHtml(v.comment)}</div>
+    </div>
+    <div class="nav-row">
+      <button class="nav-btn" onclick="findAdjacent('prev')">◂ Anterior</button>
+      <button class="nav-btn" onclick="findAdjacent('next')">Próximo ▸</button>
+    </div>
+  `;
+}
+
+function renderEmpty(msg) {
+  document.getElementById('mainArea').innerHTML = `<div class="card"><div class="empty-state">${escapeHtml(msg)}</div></div>`;
+}
+
+function renderResultsList(rows, query) {
+  const area = document.getElementById('mainArea');
+  if (rows.length === 0) {
+    renderEmpty(`Nenhum resultado para "${query}".`);
+    return;
+  }
+  const items = rows.map(r => `
+    <div class="result-item" onclick='selectResult(${JSON.stringify(r).replace(/'/g, "&apos;")})'>
+      <div class="r-ref">${escapeHtml(r.book.charAt(0) + r.book.slice(1).toLowerCase())} ${r.chapter}:${r.verse}</div>
+      <div class="r-text">${escapeHtml(r.text.slice(0, 140))}${r.text.length > 140 ? '…' : ''}</div>
+    </div>
+  `).join("");
+  area.innerHTML = `<div class="results-list">${items}</div>`;
+}
+
+function selectResult(row) {
+  current = row;
+  renderVerse(current);
+  syncSelectorsToCurrent();
+}
+window.selectResult = selectResult;
+
+async function handleSearch() {
+  const query = document.getElementById('searchInput').value.trim();
+  if (!query) return;
+
+  const ref = parseReference(query);
+  if (ref) {
+    await loadVerse(ref.book, ref.chapter, ref.verse);
+    return;
+  }
+
+  // keyword search
+  const area = document.getElementById('mainArea');
+  area.innerHTML = `<div class="card"><div class="loading-state">Buscando...</div></div>`;
+  try {
+    const encoded = encodeURIComponent(`%${query}%`);
+    const rows = await sb(`verses?text=ilike.${encoded}&order=book_order.asc,chapter.asc,verse.asc&limit=30&select=*`);
+    renderResultsList(rows, query);
+  } catch (e) {
+    renderEmpty("Erro na busca por palavra-chave.");
+  }
+}
+
+document.getElementById('searchInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') handleSearch();
+});
+
+document.getElementById('bookSelect').addEventListener('change', onBookSelectChange);
+document.getElementById('chapterSelect').addEventListener('change', onChapterSelectChange);
+document.getElementById('verseSelect').addEventListener('change', onVerseSelectChange);
+
+// initial load: Genesis 1:1
+populateBookSelect();
+loadVerse("GENESIS", 1, 1);
+</script>
+</body>
+</html>
