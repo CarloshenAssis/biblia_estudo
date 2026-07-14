@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { -webkit-font-smoothing: antialiased; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes shimmer { 0% { background-position: -200px 0; } 100% { background-position: 200px 0; } }
+  ::selection { background: rgba(169,129,47,0.25); }
+</style>
+</helmet>
+
+<div style="{{ appStyle }}">
+
+  <div style="{{ topBarStyle }}">
+    <div style="{{ logoWrapStyle }}" onClick="{{ goHome }}">
+      <span style="{{ logoMarkStyle }}">℞</span>
+      <span style="{{ logoTextStyle }}">Bíblia Expositor</span>
+    </div>
+    <button style="{{ searchTriggerStyle }}" onClick="{{ openSearch }}">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <span>Buscar um versículo, tema ou palavra…</span>
+    </button>
+    <div style="{{ topIconRowStyle }}">
+      <button style="{{ iconBtnStyleFav }}" onClick="{{ goFavorites }}" title="Favoritos">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="{{ favIconFill }}" stroke="currentColor" stroke-width="1.6"><polygon points="12 2 15.09 8.63 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.63 12 2"></polygon></svg>
+      </button>
+      <button style="{{ iconBtnStyleHist }}" onClick="{{ goHistory }}" title="Histórico">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 16 14"></polyline></svg>
+      </button>
+      <button style="{{ iconBtnStyle }}" onClick="{{ toggleTheme }}" title="Alternar tema">
+        <sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"></line><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"></line><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"></line></svg>
+        </sc-if>
+        <sc-if value="{{ isLight }}" hint-placeholder-val="{{ true }}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </sc-if>
+      </button>
+      <button style="{{ iconBtnStyle }}" onClick="{{ toggleNav }}" title="Menu">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><line x1="4" y1="7" x2="20" y2="7"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="17" x2="20" y2="17"></line></svg>
+      </button>
+    </div>
+  </div>
+
+  <div style="{{ bodyRowStyle }}">
+
+    <sc-if value="{{ showSidebarBackdrop }}" hint-placeholder-val="{{ false }}">
+      <div style="{{ backdropStyle }}" onClick="{{ closeNav }}"></div>
+    </sc-if>
+
+    <sc-if value="{{ showSidebar }}" hint-placeholder-val="{{ true }}">
+      <div style="{{ sidebarStyle }}">
+        <div style="{{ sidebarHeaderStyle }}">Navegação bíblica</div>
+
+        <div style="{{ testamentLabelStyle }}">Antigo Testamento</div>
+        <sc-for list="{{ atBooks }}" as="book" hint-placeholder-count="5">
+          <div>
+            <button style="{{ book.rowStyle }}" onClick="{{ book.onToggle }}">
+              <span>{{ book.name }}</span>
+              <span style="{{ book.chevStyle }}">{{ book.chevLabel }}</span>
+            </button>
+            <sc-if value="{{ book.isOpen }}" hint-placeholder-val="{{ false }}">
+              <div style="{{ chapterGridStyle }}">
+                <sc-for list="{{ book.chaptersArr }}" as="ch" hint-placeholder-count="0">
+                  <button style="{{ ch.style }}" onClick="{{ ch.onClick }}">{{ ch.n }}</button>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+
+        <div style="{{ testamentLabelStyle }}">Novo Testamento</div>
+        <sc-for list="{{ ntBooks }}" as="book" hint-placeholder-count="5">
+          <div>
+            <button style="{{ book.rowStyle }}" onClick="{{ book.onToggle }}">
+              <span>{{ book.name }}</span>
+              <span style="{{ book.chevStyle }}">{{ book.chevLabel }}</span>
+            </button>
+            <sc-if value="{{ book.isOpen }}" hint-placeholder-val="{{ false }}">
+              <div style="{{ chapterGridStyle }}">
+                <sc-for list="{{ book.chaptersArr }}" as="ch" hint-placeholder-count="0">
+                  <button style="{{ ch.style }}" onClick="{{ ch.onClick }}">{{ ch.n }}</button>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <div style="{{ mainAreaStyle }}">
+
+      <sc-if value="{{ isReadingView }}" hint-placeholder-val="{{ true }}">
+        <div style="{{ readingGridStyle }}">
+
+          <div style="{{ readingColStyle }}">
+            <div style="{{ readingHeaderRowStyle }}">
+              <div>
+                <div style="{{ chapterTitleStyle }}">{{ currentBook }} {{ currentChapter }}</div>
+                <div style="{{ chapterMetaStyle }}">{{ verseRangeLabel }}</div>
+              </div>
+              <div style="{{ verseActionsStyle }}">
+                <button style="{{ singleVerseToggleStyle }}" onClick="{{ toggleSingleVerse }}">{{ singleVerseLabel }}</button>
+                <button style="{{ favVerseBtnStyle }}" onClick="{{ toggleCurrentFavorite }}" title="Favoritar versículo">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="{{ currentFavFill }}" stroke="currentColor" stroke-width="1.6"><polygon points="12 2 15.09 8.63 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.63 12 2"></polygon></svg>
+                </button>
+                <button style="{{ shareBtnStyle }}" onClick="{{ shareVerse }}" title="Compartilhar">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg>
+                </button>
+              </div>
+            </div>
+
+            <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+              <div style="{{ skeletonWrapStyle }}">
+                <sc-for list="{{ skeletonRows }}" as="row" hint-placeholder-count="5">
+                  <div style="{{ row.style }}"></div>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isEmptyChapter }}" hint-placeholder-val="{{ false }}">
+              <div style="{{ emptyStateStyle }}">
+                <div style="{{ emptyIconStyle }}">✎</div>
+                <div style="{{ emptyTitleStyle }}">Este capítulo ainda não está neste protótipo</div>
+                <div style="{{ emptyBodyStyle }}">Os comentários completos de {{ currentBook }} {{ currentChapter }} entrarão na versão final. Experimente João 3, Salmos 23 ou Gênesis 1.</div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showVerses }}" hint-placeholder-val="{{ false }}">
+              <div style="{{ verseListStyle }}">
+                <sc-for list="{{ verseVMs }}" as="v" hint-placeholder-count="6">
+                  <div style="{{ v.rowStyle }}" onClick="{{ v.onSelect }}">
+                    <span style="{{ v.numStyle }}">{{ v.n }}</span>
+                    <sc-if value="{{ v.isDropCap }}" hint-placeholder-val="{{ false }}">
+                      <p style="{{ v.textStyle }}"><span style="{{ v.dropCapStyle }}">{{ v.letter }}</span>{{ v.rest }}</p>
+                    </sc-if>
+                    <sc-if value="{{ v.isNotDropCap }}" hint-placeholder-val="{{ true }}">
+                      <p style="{{ v.textStyle }}">{{ v.text }}</p>
+                    </sc-if>
+                  </div>
+                </sc-for>
+              </div>
+
+              <div style="{{ chapterNavRowStyle }}">
+                <button style="{{ prevBtnStyle }}" onClick="{{ prevChapter }}" disabled="{{ noPrev }}">← Capítulo anterior</button>
+                <button style="{{ nextBtnStyle }}" onClick="{{ nextChapter }}" disabled="{{ noNext }}">Próximo capítulo →</button>
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="{{ commentsColStyle }}">
+            <div style="{{ tabRowStyle }}">
+              <button style="{{ tabExpositorStyle }}" onClick="{{ setTabExpositor }}">Expositor</button>
+              <button style="{{ tabAplicacaoStyle }}" onClick="{{ setTabAplicacao }}">Aplicação Pessoal</button>
+            </div>
+
+            <sc-if value="{{ isTabExpositor }}" hint-placeholder-val="{{ true }}">
+              <div style="{{ commentBodyStyle }}">
+                <sc-for list="{{ expositorComments }}" as="c" hint-placeholder-count="1">
+                  <div style="{{ commentCardStyle }}">
+                    <p style="{{ commentTextStyle }}">{{ c.text }}</p>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ noExpositorComments }}" hint-placeholder-val="{{ false }}">
+                  <div style="{{ emptyCommentStyle }}">Nenhum comentário do Expositor para este versículo — selecione outro versículo em destaque.</div>
+                </sc-if>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isTabAplicacao }}" hint-placeholder-val="{{ false }}">
+              <div style="{{ commentBodyStyle }}">
+                <sc-for list="{{ aplicacaoComments }}" as="c" hint-placeholder-count="1">
+                  <div style="{{ commentCardStyle }}">
+                    <sc-if value="{{ c.showRangeTag }}" hint-placeholder-val="{{ false }}">
+                      <div style="{{ rangeTagStyle }}">{{ c.rangeLabel }}</div>
+                    </sc-if>
+                    <p style="{{ commentTextStyle }}">{{ c.text }}</p>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ noAplicacaoComments }}" hint-placeholder-val="{{ false }}">
+                  <div style="{{ emptyCommentStyle }}">Nenhum comentário de Aplicação Pessoal para este trecho.</div>
+                </sc-if>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isFavoritesView }}" hint-placeholder-val="{{ false }}">
+        <div style="{{ pageWrapStyle }}">
+          <div style="{{ pageHeaderStyle }}">
+            <div style="{{ pageTitleStyle }}">Favoritos</div>
+            <input style="{{ pageSearchInputStyle }}" placeholder="Buscar nos favoritos…" value="{{ favSearchQuery }}" onChange="{{ onFavSearchChange }}" />
+          </div>
+          <sc-if value="{{ noFavorites }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ emptyStateStyle }}">
+              <div style="{{ emptyIconStyle }}">☆</div>
+              <div style="{{ emptyTitleStyle }}">Nenhum versículo favoritado</div>
+              <div style="{{ emptyBodyStyle }}">Toque na estrela ao lado de um versículo durante a leitura para salvá-lo aqui.</div>
+            </div>
+          </sc-if>
+          <sc-for list="{{ favoriteGroups }}" as="grp" hint-placeholder-count="0">
+            <div style="{{ groupBlockStyle }}">
+              <div style="{{ groupLabelStyle }}">{{ grp.book }}</div>
+              <sc-for list="{{ grp.items }}" as="it" hint-placeholder-count="1">
+                <div style="{{ favCardStyle }}" onClick="{{ it.onOpen }}">
+                  <div style="{{ favCardTopStyle }}">
+                    <span style="{{ favRefStyle }}">{{ it.ref }}</span>
+                    <span style="{{ favDateStyle }}">{{ it.savedLabel }}</span>
+                  </div>
+                  <p style="{{ favSnippetStyle }}">{{ it.text }}</p>
+                  <button style="{{ favRemoveBtnStyle }}" onClick="{{ it.onRemove }}">Remover</button>
+                </div>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isHistoryView }}" hint-placeholder-val="{{ false }}">
+        <div style="{{ pageWrapStyle }}">
+          <div style="{{ pageHeaderStyle }}">
+            <div style="{{ pageTitleStyle }}">Histórico de leitura</div>
+          </div>
+          <sc-if value="{{ noHistory }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ emptyStateStyle }}">
+              <div style="{{ emptyIconStyle }}">◔</div>
+              <div style="{{ emptyTitleStyle }}">Ainda sem histórico</div>
+              <div style="{{ emptyBodyStyle }}">Os versículos que você ler aparecerão aqui para você retomar o estudo.</div>
+            </div>
+          </sc-if>
+          <sc-for list="{{ historyItems }}" as="it" hint-placeholder-count="0">
+            <div style="{{ historyCardStyle }}">
+              <div style="{{ favCardTopStyle }}">
+                <span style="{{ favRefStyle }}">{{ it.ref }}</span>
+                <span style="{{ favDateStyle }}">{{ it.whenLabel }}</span>
+              </div>
+              <p style="{{ favSnippetStyle }}">{{ it.text }}</p>
+              <button style="{{ resumeBtnStyle }}" onClick="{{ it.onResume }}">Continuar leitura →</button>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+    </div>
+  </div>
+
+  <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+    <div style="{{ bottomNavStyle }}">
+      <button style="{{ bnReadingStyle }}" onClick="{{ goReading }}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        <span>Ler</span>
+      </button>
+      <button style="{{ bnSearchStyle }}" onClick="{{ openSearch }}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <span>Buscar</span>
+      </button>
+      <button style="{{ bnFavStyle }}" onClick="{{ goFavorites }}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="{{ favIconFill }}" stroke="currentColor" stroke-width="1.6"><polygon points="12 2 15.09 8.63 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.63 12 2"></polygon></svg>
+        <span>Favoritos</span>
+      </button>
+      <button style="{{ bnHistStyle }}" onClick="{{ goHistory }}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 16 14"></polyline></svg>
+        <span>Histórico</span>
+      </button>
+      <button style="{{ bnMenuStyle }}" onClick="{{ toggleNav }}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><line x1="4" y1="7" x2="20" y2="7"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="17" x2="20" y2="17"></line></svg>
+        <span>Menu</span>
+      </button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ searchOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="{{ searchOverlayStyle }}">
+      <div style="{{ searchBoxStyle }}">
+        <div style="{{ searchInputRowStyle }}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input style="{{ searchInputStyle }}" placeholder="Ex.: João 3:16, jo 3:16, romanos 8, amor, fé…" value="{{ searchQuery }}" onChange="{{ onSearchChange }}" autoFocus="{{ true }}" />
+          <button style="{{ searchCloseStyle }}" onClick="{{ closeSearch }}">Fechar</button>
+        </div>
+
+        <div style="{{ searchResultsWrapStyle }}">
+          <sc-if value="{{ searchHasVerses }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ searchSectionLabelStyle }}">Versículos</div>
+            <sc-for list="{{ searchVerseResults }}" as="r" hint-placeholder-count="0">
+              <div style="{{ searchResultRowStyle }}" onClick="{{ r.onOpen }}">
+                <span style="{{ favRefStyle }}">{{ r.ref }}</span>
+                <p style="{{ favSnippetStyle }}">{{ r.snippet }}</p>
+              </div>
+            </sc-for>
+          </sc-if>
+          <sc-if value="{{ searchHasComments }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ searchSectionLabelStyle }}">Comentários</div>
+            <sc-for list="{{ searchCommentResults }}" as="r" hint-placeholder-count="0">
+              <div style="{{ searchResultRowStyle }}" onClick="{{ r.onOpen }}">
+                <span style="{{ favRefStyle }}">{{ r.ref }} · {{ r.source }}</span>
+                <p style="{{ favSnippetStyle }}">{{ r.snippet }}</p>
+              </div>
+            </sc-for>
+          </sc-if>
+          <sc-if value="{{ searchHasHistory }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ searchSectionLabelStyle }}">Histórico recente</div>
+            <sc-for list="{{ searchHistoryResults }}" as="r" hint-placeholder-count="0">
+              <div style="{{ searchResultRowStyle }}" onClick="{{ r.onOpen }}">
+                <span style="{{ favRefStyle }}">{{ r.ref }}</span>
+                <p style="{{ favSnippetStyle }}">{{ r.snippet }}</p>
+              </div>
+            </sc-for>
+          </sc-if>
+          <sc-if value="{{ searchNoResults }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ emptyStateStyle }}">
+              <div style="{{ emptyIconStyle }}">⌕</div>
+              <div style="{{ emptyTitleStyle }}">Nenhum resultado encontrado</div>
+              <div style="{{ emptyBodyStyle }}">Tente "João 3:16", "salmos 23" ou uma palavra como "amor".</div>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+    <div style="{{ toastStyle }}">{{ toast }}</div>
+  </sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const norm = (s) => (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+const range = (a,b) => { const r=[]; for(let i=a;i<=b;i++) r.push(i); return r; };
+const KEY_ORDER = ['Gênesis-1','Salmos-23','João-3'];
+
+class Component extends DCLogic {
+  state = {
+    theme: 'light', view: 'reading', navOpen: false, expandedBook: null,
+    searchOpen: false, searchQuery: '', favSearchQuery: '', commentTab: 'expositor',
+    currentBook: 'João', currentChapter: 3, selectedVerse: 16, loading: false,
+    width: typeof window !== 'undefined' ? window.innerWidth : 1280,
+    favorites: [], history: [], toast: null, singleVerseMode: false,
+    BOOKS: [], VERSES: {}, ABBR: {}, dataLoaded: false
+  };
+
+  componentDidMount() {
+    try {
+      const f = JSON.parse(localStorage.getItem('be_favorites') || '[]');
+      const h = JSON.parse(localStorage.getItem('be_history') || '[]');
+      const t = localStorage.getItem('be_theme');
+      this.setState({ favorites: f, history: h, theme: t === 'dark' ? 'dark' : 'light' });
+    } catch (e) {}
+    this._onResize = () => this.setState({ width: window.innerWidth });
+    window.addEventListener('resize', this._onResize);
+    import('./bible-data.js').then((mod) => {
+      this.setState({ BOOKS: mod.BOOKS, VERSES: mod.VERSES, ABBR: mod.ABBR, dataLoaded: true });
+      this.addHistory('João', 3, 16);
+    });
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this._onResize); }
+
+  persistFav(list) { try { localStorage.setItem('be_favorites', JSON.stringify(list)); } catch (e) {} }
+  persistHist(list) { try { localStorage.setItem('be_history', JSON.stringify(list)); } catch (e) {} }
+  showToast(msg) { this.setState({ toast: msg }); clearTimeout(this._toastT); this._toastT = setTimeout(() => this.setState({ toast: null }), 2200); }
+
+  getVerseText(book, chapter, n) {
+    const data = this.state.VERSES[`${book}-${chapter}`];
+    if (!data) return '';
+    const v = data.verses.find(x => x.n === n);
+    return v ? v.text : '';
+  }
+
+  addHistory(book, chapter, n) {
+    const ref = `${book} ${chapter}:${n}`;
+    const text = this.getVerseText(book, chapter, n);
+    let list = this.state.history.filter(h => h.ref !== ref);
+    list.unshift({ ref, book, chapter, verse: n, text, ts: Date.now() });
+    list = list.slice(0, 12);
+    this.setState({ history: list });
+    this.persistHist(list);
+  }
+
+  toggleTheme() {
+    const next = this.state.theme === 'light' ? 'dark' : 'light';
+    this.setState({ theme: next });
+    try { localStorage.setItem('be_theme', next); } catch (e) {}
+  }
+
+  setView(v) { this.setState({ view: v, navOpen: this.state.width >= 1080 ? this.state.navOpen : false }); }
+  goHome() { this.setView('reading'); }
+  goReading() { this.setView('reading'); }
+  goFavorites() { this.setView('favorites'); }
+  goHistory() { this.setView('history'); }
+  toggleNav() { this.setState({ navOpen: !this.state.navOpen }); }
+  closeNav() { this.setState({ navOpen: false }); }
+  toggleBook(name) { this.setState({ expandedBook: this.state.expandedBook === name ? null : name }); }
+
+  goToChapter(book, chapter) {
+    const data = this.state.VERSES[`${book}-${chapter}`];
+    this.setState({ loading: true });
+    clearTimeout(this._loadT);
+    this._loadT = setTimeout(() => this.setState({ loading: false }), 380);
+    const selectedVerse = data ? data.range[0] : null;
+    this.setState({
+      currentBook: book, currentChapter: chapter, selectedVerse,
+      view: 'reading', navOpen: this.state.width >= 1080 ? this.state.navOpen : false
+    });
+    if (data && selectedVerse) this.addHistory(book, chapter, selectedVerse);
+  }
+
+  selectVerse(n) { this.setState({ selectedVerse: n }); this.addHistory(this.state.currentBook, this.state.currentChapter, n); }
+
+  stepChapter(dir) {
+    const key = `${this.state.currentBook}-${this.state.currentChapter}`;
+    const idx = KEY_ORDER.indexOf(key);
+    const nextIdx = idx + dir;
+    if (nextIdx < 0 || nextIdx >= KEY_ORDER.length) return;
+    const [b, c] = KEY_ORDER[nextIdx].split('-');
+    this.goToChapter(b, Number(c));
+  }
+  prevChapter() { this.stepChapter(-1); }
+  nextChapter() { this.stepChapter(1); }
+
+  toggleCurrentFavorite() {
+    const { currentBook, currentChapter, selectedVerse } = this.state;
+    if (!selectedVerse) return;
+    const ref = `${currentBook} ${currentChapter}:${selectedVerse}`;
+    const exists = this.state.favorites.some(f => f.ref === ref);
+    let list;
+    if (exists) { list = this.state.favorites.filter(f => f.ref !== ref); this.showToast('Removido dos favoritos'); }
+    else {
+      const text = this.getVerseText(currentBook, currentChapter, selectedVerse);
+      list = [{ ref, book: currentBook, chapter: currentChapter, verse: selectedVerse, text, savedAt: Date.now() }, ...this.state.favorites];
+      this.showToast('Adicionado aos favoritos');
+    }
+    this.setState({ favorites: list }); this.persistFav(list);
+  }
+  removeFavorite(ref) {
+    const list = this.state.favorites.filter(f => f.ref !== ref);
+    this.setState({ favorites: list }); this.persistFav(list); this.showToast('Removido dos favoritos');
+  }
+
+  shareVerse() {
+    const { currentBook, currentChapter, selectedVerse } = this.state;
+    const ref = `${currentBook} ${currentChapter}:${selectedVerse}`;
+    const text = this.getVerseText(currentBook, currentChapter, selectedVerse);
+    const full = `${ref} — ${text}`;
+    if (navigator.clipboard) navigator.clipboard.writeText(full).catch(() => {});
+    this.showToast('Referência copiada');
+  }
+
+  openSearch() { this.setState({ searchOpen: true }); }
+  closeSearch() { this.setState({ searchOpen: false }); }
+  onSearchChange(e) { this.setState({ searchQuery: e.target.value }); }
+  onFavSearchChange(e) { this.setState({ favSearchQuery: e.target.value }); }
+  toggleSingleVerse() { this.setState({ singleVerseMode: !this.state.singleVerseMode }); }
+  setTabExpositor() { this.setState({ commentTab: 'expositor' }); }
+  setTabAplicacao() { this.setState({ commentTab: 'aplicacao' }); }
+
+  runSearch(query) {
+    const { BOOKS, VERSES, ABBR } = this.state;
+    const q = norm(query);
+    const result = { verses: [], comments: [], history: [] };
+    if (!q) return result;
+    let matchedBook = null, rest = q;
+    for (const key of Object.keys(ABBR)) {
+      if (q.startsWith(key)) { matchedBook = ABBR[key]; rest = q.slice(key.length).trim(); break; }
+    }
+    if (!matchedBook) {
+      for (const b of BOOKS) {
+        const nb = norm(b.name);
+        if (q.startsWith(nb)) { matchedBook = b.name; rest = q.slice(nb.length).trim(); break; }
+      }
+    }
+    if (matchedBook) {
+      const nums = rest.match(/\d+/g) || [];
+      const chapter = nums[0] ? Number(nums[0]) : null;
+      const verse = nums[1] ? Number(nums[1]) : null;
+      if (chapter) {
+        const data = VERSES[`${matchedBook}-${chapter}`];
+        const v = verse || (data ? data.range[0] : null);
+        const snippet = data && v ? this.getVerseText(matchedBook, chapter, v) : 'Capítulo ainda não disponível neste protótipo.';
+        result.verses.push({ ref: `${matchedBook} ${chapter}${verse ? ':' + verse : ''}`, snippet, book: matchedBook, chapter, verse: v });
+      }
+    } else {
+      Object.values(VERSES).forEach((data) => {
+        data.verses.forEach((v) => {
+          if (norm(v.text).includes(q)) result.verses.push({ ref: `${data.book} ${data.chapter}:${v.n}`, snippet: v.text, book: data.book, chapter: data.chapter, verse: v.n });
+        });
+        (data.comments.expositor || []).forEach((c) => {
+          if (norm(c.text).includes(q)) result.comments.push({ ref: `${data.book} ${data.chapter}`, source: 'Expositor', snippet: c.text, book: data.book, chapter: data.chapter, verse: data.range[0] });
+        });
+        (data.comments.aplicacao || []).forEach((c) => {
+          if (norm(c.text).includes(q)) result.comments.push({ ref: `${data.book} ${data.chapter}:${c.verse}`, source: 'Aplicação Pessoal', snippet: c.text, book: data.book, chapter: data.chapter, verse: c.verse });
+        });
+      });
+    }
+    result.history = this.state.history.filter(h => norm(h.ref + ' ' + h.text).includes(q))
+      .map(h => ({ ref: h.ref, snippet: h.text, book: h.book, chapter: h.chapter, verse: h.verse }));
+    return result;
+  }
+
+  renderVals() {
+    const st = this.state;
+    const isDark = st.theme === 'dark';
+    const T = isDark ? {
+      bg: '#1c1712', surface: '#242019', surfaceAlt: '#2b2419', border: '#3d3327',
+      ink: '#ece3d0', inkSoft: '#b3a58c', accent: '#d7a25f', accentSoft: '#3a2f20', shadow: 'rgba(0,0,0,0.35)'
+    } : {
+      bg: '#f7f2e6', surface: '#fffcf6', surfaceAlt: '#f0e8d7', border: '#e0d4b8', ink: '#2b2420',
+      inkSoft: '#6c5f4d', accent: '#8a4a2f', accentSoft: '#f1e2ce', shadow: 'rgba(60,45,20,0.08)'
+    };
+    const serif = "'Crimson Pro', Georgia, serif";
+    const sans = "'Work Sans', sans-serif";
+    const width = st.width;
+    const isMobile = width < 720;
+    const isTablet = width >= 720 && width < 1080;
+    const isDesktop = width >= 1080;
+    const showSidebar = st.navOpen || isDesktop;
+    const showSidebarBackdrop = st.navOpen && !isDesktop;
+
+    const appStyle = { height: '100vh', width: '100%', display: 'flex', flexDirection: 'column', background: T.bg, color: T.ink, fontFamily: sans, overflow: 'hidden', position: 'relative' };
+    const topBarStyle = { height: 64, minHeight: 64, display: 'flex', alignItems: 'center', gap: 16, padding: '0 20px', borderBottom: `1px solid ${T.border}`, background: T.surface };
+    const logoWrapStyle = { display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', flexShrink: 0 };
+    const logoMarkStyle = { fontFamily: serif, fontSize: 22, color: T.accent };
+    const logoTextStyle = { fontFamily: serif, fontSize: 19, fontWeight: 600, letterSpacing: 0.2, display: isMobile ? 'none' : 'inline' };
+    const searchTriggerStyle = { flex: 1, maxWidth: 460, display: 'flex', alignItems: 'center', gap: 10, height: 38, padding: '0 14px', borderRadius: 8, border: `1px solid ${T.border}`, background: T.surfaceAlt, color: T.inkSoft, fontFamily: sans, fontSize: 13.5, cursor: 'pointer', textAlign: 'left' };
+    const topIconRowStyle = { display: 'flex', alignItems: 'center', gap: 4, marginLeft: 'auto' };
+    const iconBtn = (active) => ({ width: 36, height: 36, borderRadius: 8, border: 'none', background: active ? T.accentSoft : 'transparent', color: active ? T.accent : T.inkSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' });
+    const iconBtnStyle = iconBtn(false);
+    const iconBtnStyleFav = iconBtn(st.view === 'favorites');
+    const iconBtnStyleHist = iconBtn(st.view === 'history');
+
+    const bodyRowStyle = { flex: 1, minHeight: 0, display: 'flex', overflow: 'hidden', position: 'relative' };
+    const backdropStyle = { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 30 };
+    const sidebarStyle = {
+      width: 272, minWidth: 272, background: T.surface, borderRight: `1px solid ${T.border}`, overflowY: 'auto', padding: '18px 14px 90px',
+      position: isDesktop ? 'relative' : 'fixed', top: isDesktop ? 'auto' : 64, bottom: isDesktop ? 'auto' : 0, left: isDesktop ? 'auto' : 0,
+      height: isDesktop ? 'auto' : `calc(100vh - 64px)`, zIndex: 31, boxShadow: isDesktop ? 'none' : `4px 0 24px ${T.shadow}`
+    };
+    const sidebarHeaderStyle = { fontFamily: serif, fontSize: 15, fontWeight: 600, color: T.inkSoft, marginBottom: 14, letterSpacing: 0.3 };
+    const testamentLabelStyle = { fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, color: T.accent, margin: '16px 4px 6px' };
+    const chapterGridStyle = { display: 'flex', flexWrap: 'wrap', gap: 6, padding: '6px 6px 12px' };
+
+    const mkBook = (b) => {
+      const isOpen = st.expandedBook === b.name;
+      const chaptersArr = isOpen ? range(1, b.chapters).map(n => {
+        const available = !!st.VERSES[`${b.name}-${n}`];
+        return {
+          n,
+          style: { minWidth: 30, height: 28, padding: '0 4px', borderRadius: 6, border: `1px solid ${available ? T.accent : T.border}`, background: available ? T.accentSoft : 'transparent', color: available ? T.accent : T.inkSoft, fontSize: 12, cursor: 'pointer', fontFamily: sans, fontWeight: available ? 600 : 400 },
+          onClick: () => this.goToChapter(b.name, n)
+        };
+      }) : [];
+      return {
+        name: b.name, isOpen, chaptersArr,
+        rowStyle: { width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '9px 8px', borderRadius: 7, border: 'none', background: isOpen ? T.surfaceAlt : 'transparent', color: T.ink, fontFamily: sans, fontSize: 13.5, cursor: 'pointer', textAlign: 'left' },
+        chevStyle: { color: T.inkSoft, fontSize: 11, transform: isOpen ? 'rotate(90deg)' : 'none', transition: 'transform .15s' },
+        chevLabel: '›',
+        onToggle: () => this.toggleBook(b.name)
+      };
+    };
+    const atBooks = st.BOOKS.filter(b => b.testament === 'AT').map(mkBook);
+    const ntBooks = st.BOOKS.filter(b => b.testament === 'NT').map(mkBook);
+
+    const mainAreaStyle = { flex: 1, minWidth: 0, overflowY: 'auto', paddingBottom: isMobile ? 76 : 0 };
+    const isReadingView = st.view === 'reading';
+    const isFavoritesView = st.view === 'favorites';
+    const isHistoryView = st.view === 'history';
+
+    const readingGridStyle = { display: 'flex', flexDirection: (isMobile || isTablet) ? 'column' : 'row', gap: 0, alignItems: 'flex-start', padding: isMobile ? '20px 16px 40px' : '36px 40px 60px', maxWidth: 1280, margin: '0 auto' };
+    const readingColStyle = { flex: (isMobile || isTablet) ? 'none' : '1 1 auto', width: (isMobile || isTablet) ? '100%' : 'auto', maxWidth: (isMobile || isTablet) ? 'none' : 660, paddingRight: (isMobile || isTablet) ? 0 : 48 };
+    const commentsColStyle = { width: (isMobile || isTablet) ? '100%' : 380, minWidth: (isMobile || isTablet) ? '100%' : 340, marginTop: (isMobile || isTablet) ? 32 : 0, borderLeft: (isMobile || isTablet) ? 'none' : `1px solid ${T.border}`, paddingLeft: (isMobile || isTablet) ? 0 : 32, borderTop: (isMobile || isTablet) ? `1px solid ${T.border}` : 'none', paddingTop: (isMobile || isTablet) ? 28 : 0 };
+
+    const readingHeaderRowStyle = { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 22, gap: 12 };
+    const chapterTitleStyle = { fontFamily: serif, fontSize: isMobile ? 28 : 34, fontWeight: 600 };
+    const chapterMetaStyle = { fontSize: 12.5, color: T.inkSoft, marginTop: 4 };
+    const verseActionsStyle = { display: 'flex', gap: 6, flexShrink: 0, alignItems: 'center' };
+    const singleVerseToggleStyle = { fontSize: 12, fontWeight: 600, color: st.singleVerseMode ? T.accent : T.inkSoft, background: st.singleVerseMode ? T.accentSoft : 'transparent', border: `1px solid ${st.singleVerseMode ? T.accent : T.border}`, borderRadius: 999, padding: '7px 12px', cursor: 'pointer', fontFamily: sans, marginRight: 4, whiteSpace: 'nowrap' };
+    const favVerseBtnStyle = { width: 34, height: 34, borderRadius: 8, border: `1px solid ${T.border}`, background: T.surface, color: T.accent, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' };
+    const shareBtnStyle = { ...favVerseBtnStyle, color: T.inkSoft };
+
+    const key = `${st.currentBook}-${st.currentChapter}`;
+    const data = st.VERSES[key];
+    const isEmptyChapter = st.dataLoaded && !data && !st.loading;
+    const showVerses = !!data && !st.loading;
+    const verseRangeLabel = data ? (st.singleVerseMode ? `Mostrando somente o versículo ${st.selectedVerse} de ${data.total}` : `Mostrando versículos ${data.range[0]}–${data.range[1]} de ${data.total}`) : (st.dataLoaded ? 'Capítulo indisponível neste protótipo' : 'Carregando…');
+
+    const displayVerses = data ? (st.singleVerseMode ? data.verses.filter(v => v.n === st.selectedVerse) : data.verses) : [];
+    const verseVMs = displayVerses.map(v => {
+      const selected = v.n === st.selectedVerse;
+      const isDropCap = v.n === 1;
+      return {
+        n: v.n, text: v.text, isDropCap, isNotDropCap: !isDropCap,
+        letter: isDropCap ? v.text.charAt(0) : '', rest: isDropCap ? v.text.slice(1) : '',
+        rowStyle: { display: 'flex', gap: 14, padding: '10px 12px', borderRadius: 8, cursor: 'pointer', background: selected ? T.accentSoft : 'transparent' },
+        numStyle: { fontFamily: serif, fontSize: 12.5, color: selected ? T.accent : T.inkSoft, fontWeight: 600, minWidth: 20, paddingTop: 5 },
+        textStyle: { fontFamily: serif, fontSize: isMobile ? 18 : 19.5, lineHeight: 1.75, color: T.ink },
+        dropCapStyle: { fontFamily: serif, fontSize: 42, lineHeight: 0.7, float: 'left', marginRight: 6, marginTop: 6, color: T.accent, fontWeight: 600 },
+        onSelect: () => this.selectVerse(v.n)
+      };
+    });
+
+    const idx = KEY_ORDER.indexOf(key);
+    const noPrev = idx <= 0;
+    const noNext = idx === -1 || idx >= KEY_ORDER.length - 1;
+    const navBtn = (disabled) => ({ flex: 1, padding: '12px 14px', borderRadius: 8, border: `1px solid ${T.border}`, background: disabled ? 'transparent' : T.surface, color: disabled ? T.border : T.ink, fontFamily: sans, fontSize: 13.5, cursor: disabled ? 'default' : 'pointer', opacity: disabled ? 0.5 : 1 });
+    const chapterNavRowStyle = { display: 'flex', gap: 10, marginTop: 22 };
+    const prevBtnStyle = navBtn(noPrev);
+    const nextBtnStyle = navBtn(noNext);
+
+    const skeletonRows = range(1, 5).map(() => ({ style: { height: 22, borderRadius: 6, background: `linear-gradient(90deg, ${T.surfaceAlt} 25%, ${T.border} 37%, ${T.surfaceAlt} 63%)`, backgroundSize: '400px 100%', animation: 'shimmer 1.4s infinite linear', marginBottom: 14 } }));
+    const skeletonWrapStyle = { padding: '4px 12px' };
+
+    const emptyStateStyle = { textAlign: 'center', padding: '48px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 };
+    const emptyIconStyle = { fontSize: 30, color: T.accent, marginBottom: 4 };
+    const emptyTitleStyle = { fontFamily: serif, fontSize: 18, fontWeight: 600 };
+    const emptyBodyStyle = { fontSize: 13.5, color: T.inkSoft, maxWidth: 340, lineHeight: 1.6 };
+
+    const verseListStyle = { display: 'flex', flexDirection: 'column', gap: 2 };
+
+    const tabRowStyle = { display: 'flex', gap: 4, borderBottom: `1px solid ${T.border}`, marginBottom: 18 };
+    const tabBtn = (active) => ({ padding: '10px 4px', marginRight: 20, border: 'none', borderBottom: `2px solid ${active ? T.accent : 'transparent'}`, background: 'transparent', color: active ? T.accent : T.inkSoft, fontFamily: sans, fontWeight: 600, fontSize: 13.5, cursor: 'pointer' });
+    const isTabExpositor = st.commentTab === 'expositor';
+    const isTabAplicacao = st.commentTab === 'aplicacao';
+    const tabExpositorStyle = tabBtn(isTabExpositor);
+    const tabAplicacaoStyle = tabBtn(isTabAplicacao);
+    const commentBodyStyle = { display: 'flex', flexDirection: 'column', gap: 16 };
+    const commentCardStyle = { background: T.surface, border: `1px solid ${T.border}`, borderRadius: 10, padding: 18 };
+    const rangeTagStyle = { display: 'inline-block', fontSize: 11.5, fontWeight: 600, color: T.accent, background: T.accentSoft, padding: '4px 10px', borderRadius: 999, marginBottom: 10 };
+    const commentTextStyle = { fontFamily: serif, fontSize: 15.5, lineHeight: 1.75, color: T.ink };
+    const emptyCommentStyle = { fontSize: 13, color: T.inkSoft, lineHeight: 1.6 };
+
+    const expositorComments = data ? data.comments.expositor.filter(c => c.verse === st.selectedVerse).map(c => ({ text: c.text })) : [];
+    const aplicacaoComments = data ? data.comments.aplicacao
+      .filter(c => st.selectedVerse == null || (st.selectedVerse >= c.range[0] && st.selectedVerse <= c.range[1]))
+      .map(c => ({ text: c.text, showRangeTag: c.range[1] > c.range[0], rangeLabel: `Aplica-se a ${data.book} ${data.chapter}:${c.range[0]}–${c.range[1]}` })) : [];
+    const noExpositorComments = expositorComments.length === 0;
+    const noAplicacaoComments = aplicacaoComments.length === 0;
+
+    const currentFav = st.favorites.find(f => f.ref === `${st.currentBook} ${st.currentChapter}:${st.selectedVerse}`);
+    const currentFavFill = currentFav ? T.accent : 'none';
+    const favIconFill = st.favorites.length ? T.accent : 'none';
+
+    const pageWrapStyle = { maxWidth: 860, margin: '0 auto', padding: isMobile ? '24px 16px 40px' : '40px 40px 60px' };
+    const pageHeaderStyle = { display: 'flex', flexDirection: isMobile ? 'column' : 'row', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'center', gap: 14, marginBottom: 24 };
+    const pageTitleStyle = { fontFamily: serif, fontSize: 28, fontWeight: 600 };
+    const pageSearchInputStyle = { height: 38, minWidth: isMobile ? '100%' : 260, padding: '0 12px', borderRadius: 8, border: `1px solid ${T.border}`, background: T.surface, color: T.ink, fontFamily: sans, fontSize: 13.5 };
+    const groupBlockStyle = { marginBottom: 26 };
+    const groupLabelStyle = { fontFamily: serif, fontSize: 15, fontWeight: 600, color: T.accent, marginBottom: 10 };
+    const favCardStyle = { background: T.surface, border: `1px solid ${T.border}`, borderRadius: 10, padding: 16, marginBottom: 10, cursor: 'pointer', position: 'relative' };
+    const historyCardStyle = { ...favCardStyle, cursor: 'default' };
+    const favCardTopStyle = { display: 'flex', justifyContent: 'space-between', marginBottom: 6 };
+    const favRefStyle = { fontFamily: serif, fontWeight: 600, fontSize: 14.5, color: T.ink };
+    const favDateStyle = { fontSize: 11.5, color: T.inkSoft };
+    const favSnippetStyle = { fontFamily: serif, fontSize: 14.5, lineHeight: 1.6, color: T.inkSoft, marginBottom: 8 };
+    const favRemoveBtnStyle = { fontSize: 12, color: T.accent, background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 };
+    const resumeBtnStyle = { fontSize: 12.5, fontWeight: 600, color: T.accent, background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 };
+
+    const fq = norm(st.favSearchQuery);
+    const filteredFavs = st.favorites.filter(f => !fq || norm(f.ref + ' ' + f.text).includes(fq));
+    const favByBook = {};
+    filteredFavs.forEach(f => { (favByBook[f.book] = favByBook[f.book] || []).push(f); });
+    const favoriteGroups = Object.keys(favByBook).map(book => ({
+      book, items: favByBook[book].map(f => ({
+        ref: f.ref, text: f.text, savedLabel: new Date(f.savedAt).toLocaleDateString('pt-BR'),
+        onOpen: () => this.goToChapter(f.book, f.chapter), onRemove: (e) => { e.stopPropagation(); this.removeFavorite(f.ref); }
+      }))
+    }));
+    const noFavorites = st.favorites.length === 0;
+
+    const historyItems = st.history.map(h => ({
+      ref: h.ref, text: h.text,
+      whenLabel: new Date(h.ts).toLocaleDateString('pt-BR'),
+      onResume: () => this.goToChapter(h.book, h.chapter)
+    }));
+    const noHistory = st.history.length === 0;
+
+    const search = this.runSearch(st.searchQuery);
+    const searchVerseResults = search.verses.map(r => ({ ref: r.ref, snippet: r.snippet, onOpen: () => { this.closeSearch(); this.goToChapter(r.book, r.chapter); if (r.verse) this.selectVerse(r.verse); } }));
+    const searchCommentResults = search.comments.map(r => ({ ref: r.ref, source: r.source, snippet: r.snippet, onOpen: () => { this.closeSearch(); this.goToChapter(r.book, r.chapter); if (r.verse) this.selectVerse(r.verse); this.setState({ commentTab: r.source === 'Expositor' ? 'expositor' : 'aplicacao' }); } }));
+    const searchHistoryResults = search.history.map(r => ({ ref: r.ref, snippet: r.snippet, onOpen: () => { this.closeSearch(); this.goToChapter(r.book, r.chapter); if (r.verse) this.selectVerse(r.verse); } }));
+    const searchHasVerses = searchVerseResults.length > 0;
+    const searchHasComments = searchCommentResults.length > 0;
+    const searchHasHistory = searchHistoryResults.length > 0;
+    const searchNoResults = !!norm(st.searchQuery) && !searchHasVerses && !searchHasComments && !searchHasHistory;
+
+    const searchOverlayStyle = { position: 'fixed', inset: 0, background: 'rgba(20,15,8,0.5)', zIndex: 50, display: 'flex', justifyContent: 'center', paddingTop: isMobile ? 0 : '8vh', animation: 'fadeIn .15s ease' };
+    const searchBoxStyle = { background: T.bg, width: isMobile ? '100%' : 640, maxWidth: '100%', height: isMobile ? '100%' : 'auto', maxHeight: isMobile ? '100%' : '78vh', borderRadius: isMobile ? 0 : 14, overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: `0 20px 60px ${T.shadow}` };
+    const searchInputRowStyle = { display: 'flex', alignItems: 'center', gap: 10, padding: '16px 18px', borderBottom: `1px solid ${T.border}`, color: T.inkSoft };
+    const searchInputStyle = { flex: 1, border: 'none', outline: 'none', background: 'transparent', fontFamily: sans, fontSize: 15, color: T.ink };
+    const searchCloseStyle = { fontSize: 13, color: T.inkSoft, background: 'transparent', border: 'none', cursor: 'pointer' };
+    const searchResultsWrapStyle = { overflowY: 'auto', padding: '10px 18px 24px' };
+    const searchSectionLabelStyle = { fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, color: T.accent, margin: '16px 4px 8px' };
+    const searchResultRowStyle = { padding: '10px 10px', borderRadius: 8, cursor: 'pointer' };
+
+    const bottomNavStyle = { position: 'fixed', bottom: 0, left: 0, right: 0, height: 64, display: 'flex', background: T.surface, borderTop: `1px solid ${T.border}`, zIndex: 25 };
+    const bnBtn = (active) => ({ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3, border: 'none', background: 'transparent', color: active ? T.accent : T.inkSoft, fontSize: 10.5, fontFamily: sans, cursor: 'pointer' });
+    const bnReadingStyle = bnBtn(st.view === 'reading');
+    const bnSearchStyle = bnBtn(st.searchOpen);
+    const bnFavStyle = bnBtn(st.view === 'favorites');
+    const bnHistStyle = bnBtn(st.view === 'history');
+    const bnMenuStyle = bnBtn(st.navOpen);
+
+    const toastStyle = { position: 'fixed', bottom: isMobile ? 80 : 24, left: '50%', transform: 'translateX(-50%)', background: T.ink, color: T.bg, padding: '10px 20px', borderRadius: 999, fontSize: 13, zIndex: 60, boxShadow: `0 8px 24px ${T.shadow}` };
+
+    return {
+      appStyle, topBarStyle, logoWrapStyle, logoMarkStyle, logoTextStyle, searchTriggerStyle, topIconRowStyle,
+      iconBtnStyle, iconBtnStyleFav, iconBtnStyleHist, isDark, isLight: !isDark,
+      goHome: () => this.goHome(), openSearch: () => this.openSearch(), goFavorites: () => this.goFavorites(),
+      goHistory: () => this.goHistory(), toggleTheme: () => this.toggleTheme(), toggleNav: () => this.toggleNav(),
+      favIconFill,
+      bodyRowStyle, showSidebarBackdrop, backdropStyle, closeNav: () => this.closeNav(),
+      showSidebar, sidebarStyle, sidebarHeaderStyle, testamentLabelStyle, chapterGridStyle, atBooks, ntBooks,
+      mainAreaStyle, isReadingView, isFavoritesView, isHistoryView,
+      readingGridStyle, readingColStyle, commentsColStyle,
+      readingHeaderRowStyle, chapterTitleStyle, chapterMetaStyle, verseActionsStyle, favVerseBtnStyle, shareBtnStyle,
+      singleVerseToggleStyle, singleVerseLabel: st.singleVerseMode ? 'Ver capítulo inteiro' : 'Ver somente este versículo',
+      toggleSingleVerse: () => this.toggleSingleVerse(),
+      toggleCurrentFavorite: () => this.toggleCurrentFavorite(), shareVerse: () => this.shareVerse(), currentFavFill,
+      currentBook: st.currentBook, currentChapter: st.currentChapter, verseRangeLabel,
+      isLoading: st.loading, skeletonRows, skeletonWrapStyle,
+      isEmptyChapter, emptyStateStyle, emptyIconStyle, emptyTitleStyle, emptyBodyStyle,
+      showVerses, verseListStyle, verseVMs,
+      chapterNavRowStyle, prevBtnStyle, nextBtnStyle, noPrev, noNext, prevChapter: () => this.prevChapter(), nextChapter: () => this.nextChapter(),
+      tabRowStyle, tabExpositorStyle, tabAplicacaoStyle, setTabExpositor: () => this.setTabExpositor(), setTabAplicacao: () => this.setTabAplicacao(),
+      isTabExpositor, isTabAplicacao, commentBodyStyle, commentCardStyle, rangeTagStyle, commentTextStyle, emptyCommentStyle,
+      expositorComments, aplicacaoComments, noExpositorComments, noAplicacaoComments,
+      pageWrapStyle, pageHeaderStyle, pageTitleStyle, pageSearchInputStyle, favSearchQuery: st.favSearchQuery, onFavSearchChange: (e) => this.onFavSearchChange(e),
+      noFavorites, favoriteGroups, groupBlockStyle, groupLabelStyle, favCardStyle, favCardTopStyle, favRefStyle, favDateStyle, favSnippetStyle, favRemoveBtnStyle,
+      noHistory, historyItems, historyCardStyle, resumeBtnStyle,
+      isMobile, bottomNavStyle, bnReadingStyle, bnSearchStyle, bnFavStyle, bnHistStyle, bnMenuStyle,
+      goReading: () => this.goReading(),
+      searchOpen: st.searchOpen, searchOverlayStyle, searchBoxStyle, searchInputRowStyle, searchInputStyle, searchCloseStyle,
+      searchQuery: st.searchQuery, onSearchChange: (e) => this.onSearchChange(e), closeSearch: () => this.closeSearch(),
+      searchResultsWrapStyle, searchSectionLabelStyle, searchResultRowStyle,
+      searchHasVerses, searchHasComments, searchHasHistory, searchNoResults,
+      searchVerseResults, searchCommentResults, searchHistoryResults,
+      hasToast: !!st.toast, toast: st.toast, toastStyle
+    };
+  }
+}
+
+</script>
+</body>
+</html>

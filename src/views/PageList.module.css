@@ -1,0 +1,149 @@
+.pageWrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+}
+
+@media (min-width: 720px) {
+  .pageWrap {
+    padding: 40px 40px 60px;
+  }
+}
+
+.pageHeader {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+@media (min-width: 720px) {
+  .pageHeader {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.pageTitle {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.pageSearchInput {
+  height: 38px;
+  min-width: 100%;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+}
+
+@media (min-width: 720px) {
+  .pageSearchInput {
+    min-width: 260px;
+  }
+}
+
+.groupBlock {
+  margin-bottom: 26px;
+}
+
+.groupLabel {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.cardClickable {
+  cursor: pointer;
+}
+
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  gap: 10px;
+}
+
+.ref {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 14.5px;
+  color: var(--ink);
+}
+
+.date {
+  font-size: 11.5px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.snippet {
+  font-family: var(--font-serif);
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+}
+
+.textBtn {
+  font-size: 12px;
+  color: var(--accent);
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.resumeBtn {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--accent);
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 48px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.emptyIcon {
+  font-size: 30px;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
+.emptyTitle {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.emptyBody {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  max-width: 340px;
+  line-height: 1.6;
+}

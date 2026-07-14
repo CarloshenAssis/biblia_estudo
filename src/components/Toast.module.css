@@ -1,0 +1,19 @@
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: var(--bg);
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-size: 13px;
+  z-index: 60;
+  box-shadow: 0 8px 24px var(--shadow);
+}
+
+@media (max-width: 719px) {
+  .toast {
+    bottom: 80px;
+  }
+}
