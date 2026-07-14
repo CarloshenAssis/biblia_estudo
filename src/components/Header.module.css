@@ -1,0 +1,230 @@
+.topBar {
+  height: 56px;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  flex-shrink: 0;
+}
+
+@media (min-width: 720px) {
+  .topBar {
+    gap: 14px;
+    padding: 0 24px;
+  }
+}
+
+.logoWrap {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: none;
+  border: none;
+  color: inherit;
+}
+
+.logoMark {
+  font-family: var(--font-serif);
+  font-size: 21px;
+  color: var(--accent);
+}
+
+.logoMarkOnly {
+  font-family: var(--font-serif);
+  font-size: 19px;
+  color: var(--accent);
+  background: none;
+  border: none;
+  margin-right: 2px;
+}
+
+.logoStack {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+  text-align: left;
+}
+
+.logoLine1 {
+  font-family: var(--font-serif);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: var(--ink-soft);
+}
+
+.logoLine2 {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--ink);
+}
+
+.simpleTitle {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 600;
+  flex: 1;
+}
+
+.topNavRow {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  margin-left: 16px;
+}
+
+@media (min-width: 720px) {
+  .topNavRow {
+    display: flex;
+  }
+}
+
+.topNavBtn {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.topNavBtn.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.crumbChip {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 30px;
+  padding: 0 9px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  color: var(--ink);
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.chevInline {
+  font-size: 9px;
+  color: var(--ink-soft);
+}
+
+.topIconRow {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+}
+
+.iconBtn {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.iconBtn.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* ---------- "Mais" menu sheet ---------- */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 40;
+  border: none;
+}
+
+.sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-radius: 18px 18px 0 0;
+  padding: 10px 18px 24px;
+  z-index: 41;
+  animation: slideUp 0.18s ease;
+}
+
+@media (min-width: 720px) {
+  .sheet {
+    left: auto;
+    top: 64px;
+    bottom: auto;
+    right: 24px;
+    width: 260px;
+    border-radius: 12px;
+    padding: 8px 10px;
+    box-shadow: 0 16px 40px var(--shadow);
+    animation: fadeIn 0.12s ease;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.sheetHandle {
+  width: 36px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--border);
+  margin: 0 auto 14px;
+}
+
+@media (min-width: 720px) {
+  .sheetHandle {
+    display: none;
+  }
+}
+
+.sheetRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  height: 44px;
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  font-size: 13.5px;
+  text-align: left;
+  padding: 0 6px;
+  border-radius: 8px;
+}
+
+.sheetRow:hover {
+  background: var(--surface-alt);
+}
+
+.sheetRow.danger {
+  color: #b5462f;
+}

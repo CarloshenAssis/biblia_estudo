@@ -1,0 +1,15 @@
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  margin-bottom: 4px;
+}

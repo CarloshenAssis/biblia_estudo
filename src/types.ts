@@ -52,6 +52,21 @@ export type Theme = 'light' | 'dark';
 export type ViewName = 'reading' | 'favorites' | 'history';
 export type CommentTab = 'expositor' | 'aplicacao';
 
+/** Missão de leitura: opcional, progresso marcado explicitamente pelo usuário (não pelo histórico comum). */
+export interface ReadingMission {
+  id: string;
+  title: string;
+  startDate: string;
+  finishedBooks: string[];
+  finishedChapters: Array<{ book: string; chapter: number }>;
+  progress: number;
+  paused: boolean;
+}
+
+export interface AuthUser {
+  email: string;
+}
+
 export interface SearchResults {
   verses: Array<{ ref: string; snippet: string; book: string; chapter: number; verse: number }>;
   comments: Array<{ ref: string; source: 'Expositor' | 'Aplicação Pessoal'; snippet: string; book: string; chapter: number; verse: number }>;

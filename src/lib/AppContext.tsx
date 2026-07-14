@@ -1,7 +1,16 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import type { FavoriteItem, HistoryItem, Theme, Verse } from '../types';
+import type { AuthUser, FavoriteItem, HistoryItem, ReadingMission, Theme, Verse } from '../types';
 import { loadFavorites, loadHistory, loadTheme, saveFavorites, saveHistory, saveTheme } from './storage';
+import { loadAuthUser, saveAuthUser, validateLogin } from './auth';
+import {
+  createMission,
+  loadActiveMissionId,
+  loadMissions,
+  saveActiveMissionId,
+  saveMissions,
+  toggleChapterFinished as toggleChapterFinishedImpl,
+} from './missions';
 import { BOOK_BY_VALUE } from './books';
 
 interface AppContextValue {
@@ -12,6 +21,10 @@ interface AppContextValue {
   openNav: () => void;
   closeNav: () => void;
   toggleNav: () => void;
+
+  moreOpen: boolean;
+  toggleMore: () => void;
+  closeMore: () => void;
 
   searchOpen: boolean;
   openSearch: () => void;
@@ -27,6 +40,18 @@ interface AppContextValue {
 
   history: HistoryItem[];
   addHistory: (v: Verse) => void;
+
+  authUser: AuthUser | null;
+  login: (email: string, password: string) => string | null;
+  logout: () => void;
+
+  missions: ReadingMission[];
+  activeMission: ReadingMission | null;
+  startMission: (title: string) => void;
+  pauseOrResumeMission: () => void;
+  restartMission: () => void;
+  toggleChapterFinished: (book: string, chapter: number) => void;
+  isChapterMarked: (book: string, chapter: number) => boolean;
 }
 
 const AppContext = createContext<AppContextValue | null>(null);
@@ -39,10 +64,14 @@ function refOf(book: string, chapter: number, verse: number): string {
 export function AppProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => loadTheme());
   const [navOpen, setNavOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [favorites, setFavorites] = useState<FavoriteItem[]>(() => loadFavorites());
   const [history, setHistory] = useState<HistoryItem[]>(() => loadHistory());
+  const [authUser, setAuthUser] = useState<AuthUser | null>(() => loadAuthUser());
+  const [missions, setMissions] = useState<ReadingMission[]>(() => loadMissions());
+  const [activeMissionId, setActiveMissionIdState] = useState<string | null>(() => loadActiveMissionId());
   const toastTimer = useRef<ReturnType<typeof setTimeout>>();
 
   useEffect(() => {
@@ -57,9 +86,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const openNav = useCallback(() => setNavOpen(true), []);
+  const openNav = useCallback(() => {
+    setNavOpen(true);
+    setMoreOpen(false);
+  }, []);
   const closeNav = useCallback(() => setNavOpen(false), []);
-  const toggleNav = useCallback(() => setNavOpen((v) => !v), []);
+  const toggleNav = useCallback(() => {
+    setNavOpen((v) => !v);
+    setMoreOpen(false);
+  }, []);
+
+  const toggleMore = useCallback(() => {
+    setMoreOpen((v) => !v);
+    setNavOpen(false);
+  }, []);
+  const closeMore = useCallback(() => setMoreOpen(false), []);
 
   const openSearch = useCallback(() => setSearchOpen(true), []);
   const closeSearch = useCallback(() => setSearchOpen(false), []);
@@ -70,10 +111,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     toastTimer.current = setTimeout(() => setToast(null), 2200);
   }, []);
 
-  const isFavorite = useCallback(
-    (ref: string) => favorites.some((f) => f.ref === ref),
-    [favorites]
-  );
+  const isFavorite = useCallback((ref: string) => favorites.some((f) => f.ref === ref), [favorites]);
 
   const toggleFavorite = useCallback(
     (v: Verse) => {
@@ -118,6 +156,83 @@ export function AppProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const login = useCallback((email: string, password: string): string | null => {
+    const error = validateLogin(email, password);
+    if (error) return error;
+    const user: AuthUser = { email: email.trim() };
+    saveAuthUser(user);
+    setAuthUser(user);
+    return null;
+  }, []);
+
+  const logout = useCallback(() => {
+    saveAuthUser(null);
+    setAuthUser(null);
+  }, []);
+
+  const activeMission = useMemo(
+    () => missions.find((m) => m.id === activeMissionId) ?? null,
+    [missions, activeMissionId]
+  );
+
+  const startMission = useCallback((title: string) => {
+    const mission = createMission(title);
+    setMissions((prev) => {
+      const next = [...prev, mission];
+      saveMissions(next);
+      return next;
+    });
+    setActiveMissionIdState(mission.id);
+    saveActiveMissionId(mission.id);
+    showToast(`Nova missão: ${title}`);
+  }, [showToast]);
+
+  const updateActiveMission = useCallback(
+    (updater: (m: ReadingMission) => ReadingMission) => {
+      if (!activeMissionId) return;
+      setMissions((prev) => {
+        const next = prev.map((m) => (m.id === activeMissionId ? updater(m) : m));
+        saveMissions(next);
+        return next;
+      });
+    },
+    [activeMissionId]
+  );
+
+  const pauseOrResumeMission = useCallback(() => {
+    if (!activeMission) return;
+    const nextPaused = !activeMission.paused;
+    updateActiveMission((m) => ({ ...m, paused: nextPaused }));
+    showToast(nextPaused ? 'Missão pausada' : 'Missão retomada');
+  }, [activeMission, updateActiveMission, showToast]);
+
+  const restartMission = useCallback(() => {
+    if (!activeMission) return;
+    updateActiveMission((m) => ({
+      ...m,
+      startDate: new Date().toISOString(),
+      finishedBooks: [],
+      finishedChapters: [],
+      progress: 0,
+      paused: false,
+    }));
+    showToast('Missão reiniciada');
+  }, [activeMission, updateActiveMission, showToast]);
+
+  const toggleChapterFinished = useCallback(
+    (book: string, chapter: number) => {
+      if (!activeMission) return;
+      updateActiveMission((m) => toggleChapterFinishedImpl(m, book, chapter));
+    },
+    [activeMission, updateActiveMission]
+  );
+
+  const isChapterMarked = useCallback(
+    (book: string, chapter: number) =>
+      !!activeMission && activeMission.finishedChapters.some((c) => c.book === book && c.chapter === chapter),
+    [activeMission]
+  );
+
   const value = useMemo<AppContextValue>(
     () => ({
       theme,
@@ -126,6 +241,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
       openNav,
       closeNav,
       toggleNav,
+      moreOpen,
+      toggleMore,
+      closeMore,
       searchOpen,
       openSearch,
       closeSearch,
@@ -137,10 +255,23 @@ export function AppProvider({ children }: { children: ReactNode }) {
       removeFavorite,
       history,
       addHistory,
+      authUser,
+      login,
+      logout,
+      missions,
+      activeMission,
+      startMission,
+      pauseOrResumeMission,
+      restartMission,
+      toggleChapterFinished,
+      isChapterMarked,
     }),
     [
-      theme, toggleTheme, navOpen, openNav, closeNav, toggleNav, searchOpen, openSearch, closeSearch,
+      theme, toggleTheme, navOpen, openNav, closeNav, toggleNav, moreOpen, toggleMore, closeMore,
+      searchOpen, openSearch, closeSearch,
       toast, showToast, favorites, isFavorite, toggleFavorite, removeFavorite, history, addHistory,
+      authUser, login, logout, missions, activeMission, startMission, pauseOrResumeMission, restartMission,
+      toggleChapterFinished, isChapterMarked,
     ]
   );
 

@@ -1,0 +1,307 @@
+.wrap {
+  padding: 18px 16px 32px;
+  max-width: none;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+@media (min-width: 720px) {
+  .wrap {
+    padding: 32px 40px 60px;
+    max-width: 640px;
+  }
+}
+
+.greeting {
+  font-family: var(--font-sans);
+  font-size: 21px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+@media (min-width: 720px) {
+  .greeting {
+    font-size: 26px;
+  }
+}
+
+.greetingSub {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  margin-bottom: 22px;
+}
+
+.sectionLabel {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  margin-top: 22px;
+}
+
+/* ---------- Last read card ---------- */
+.lastCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  width: 100%;
+  text-align: left;
+}
+
+.lastIconWrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.lastBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.lastRef {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.lastSnippet {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.lastDate {
+  font-size: 11.5px;
+  color: var(--ink-soft);
+}
+
+.lastChevron {
+  color: var(--ink-soft);
+  font-size: 18px;
+  align-self: center;
+}
+
+/* ---------- Mission card ---------- */
+.missionCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.missionTopRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.progressRingOuter {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.progressRingInner {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--accent);
+}
+
+.missionProgressCol {
+  flex: 1;
+  min-width: 0;
+}
+
+.missionProgressTitle {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.missionProgressSub {
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+}
+
+.pausedTag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: 999px;
+  padding: 4px 10px;
+  margin-bottom: 12px;
+}
+
+.missionStatsRow {
+  display: flex;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 0;
+  margin-bottom: 14px;
+}
+
+.statBlock {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: var(--accent);
+}
+
+.statNum {
+  font-family: var(--font-sans);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.statLabel {
+  font-size: 10.5px;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+.missionCta {
+  width: 100%;
+  height: 46px;
+  border-radius: 9px;
+  border: none;
+  background: var(--accent);
+  color: var(--bg);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 14.5px;
+  margin-bottom: 10px;
+}
+
+.missionMetaRow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.missionLink {
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  background: transparent;
+  border: none;
+  text-decoration: underline;
+}
+
+.missionControlsRow {
+  display: flex;
+  gap: 14px;
+}
+
+.missionSmallLink {
+  font-size: 12px;
+  color: var(--accent);
+  background: transparent;
+  border: none;
+  font-weight: 600;
+}
+
+.noMissionCard {
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: 14px;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+.noMissionBody {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+  margin: 6px 0 16px;
+}
+
+.startMissionBtn {
+  height: 42px;
+  padding: 0 22px;
+  border-radius: 9px;
+  border: none;
+  background: var(--accent);
+  color: var(--bg);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 13.5px;
+}
+
+/* ---------- Quick actions ---------- */
+.quickGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+@media (min-width: 720px) {
+  .quickGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.quickTile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 12.5px;
+}
+
+/* ---------- Mission picker sheet (reuses Header sheet styles) ---------- */
+.templateList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sheetTitle {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}

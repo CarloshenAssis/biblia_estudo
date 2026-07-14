@@ -49,7 +49,12 @@ export function Sidebar() {
     <>
       {navOpen && <button className={styles.backdrop} aria-label="Fechar menu" onClick={closeNav} />}
       <nav className={`${styles.sidebar} ${navOpen ? styles.open : ''}`} aria-label="Navegação bíblica">
-        <div className={styles.sidebarHeader}>Navegação bíblica</div>
+        <div className={styles.sidebarHeaderRow}>
+          <div className={styles.sidebarHeader}>Navegação bíblica</div>
+          <button className={styles.sidebarClose} onClick={closeNav} aria-label="Fechar">
+            ✕
+          </button>
+        </div>
 
         <div className={styles.testamentLabel}>Antigo Testamento</div>
         {atBooks.map((b) => (
