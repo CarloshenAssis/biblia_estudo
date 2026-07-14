@@ -27,7 +27,7 @@ function DaysIcon() {
 }
 
 export function ReadingMissionCard() {
-  const { activeMission, startMission, pauseOrResumeMission, restartMission, showToast, history } = useApp();
+  const { activeMission, startMission, pauseOrResumeMission, restartMission, showToast } = useApp();
   const navigate = useNavigate();
   const [pickerOpen, setPickerOpen] = useState(false);
 
@@ -73,12 +73,13 @@ export function ReadingMissionCard() {
   const days = daysSince(activeMission.startDate);
   const ctaLabel = activeMission.paused ? 'Retomar missão' : 'Continuar a missão';
 
+  const lastRead = activeMission.readHistory[0] ?? null;
+
   const handleContinue = () => {
-    const last = history[0];
-    if (last) {
-      showToast('Continuando de onde você parou');
-      const slug = BOOK_BY_VALUE.get(last.book)?.slug ?? last.book.toLowerCase();
-      navigate(`/${slug}/${last.chapter}/${last.verse}`);
+    if (lastRead) {
+      showToast('Continuando a missão de onde você parou');
+      const slug = BOOK_BY_VALUE.get(lastRead.book)?.slug ?? lastRead.book.toLowerCase();
+      navigate(`/${slug}/${lastRead.chapter}/${lastRead.verse}`);
     } else {
       navigate('/joao/3/16');
     }
@@ -102,6 +103,12 @@ export function ReadingMissionCard() {
       </div>
 
       {activeMission.paused && <div className={homeStyles.pausedTag}>Missão pausada</div>}
+
+      {lastRead && (
+        <div className={homeStyles.missionLastReadRow}>
+          Você parou em <strong>{lastRead.ref}</strong>
+        </div>
+      )}
 
       <div className={homeStyles.missionStatsRow}>
         <div className={homeStyles.statBlock}>

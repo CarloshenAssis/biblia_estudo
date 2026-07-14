@@ -32,7 +32,8 @@ export function ReaderPage() {
   const { bookSlug, chapter: chapterParam, verse: verseParam } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const { favorites, toggleFavorite, addHistory, showToast, activeMission, toggleChapterFinished, isChapterMarked } = useApp();
+  const { favorites, toggleFavorite, addHistory, markMissionRead, showToast, activeMission, toggleChapterFinished, isChapterMarked } =
+    useApp();
 
   const book = bookSlug ? BOOK_BY_SLUG.get(bookSlug) : undefined;
   const chapter = Math.max(1, parseInt(chapterParam ?? '1', 10) || 1);
@@ -74,7 +75,10 @@ export function ReaderPage() {
   }, [book, chapter, selectedVerseNum]);
 
   useEffect(() => {
-    if (selectedVerse) addHistory(selectedVerse);
+    if (selectedVerse) {
+      addHistory(selectedVerse);
+      markMissionRead(selectedVerse);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedVerse?.id]);
 

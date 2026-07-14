@@ -71,7 +71,6 @@ export function MissionsPage() {
               </div>
             </div>
 
-            <div className={styles.sectionLabel}>Capítulos concluídos</div>
             <MissionHistory mission={activeMission} />
           </>
         )}

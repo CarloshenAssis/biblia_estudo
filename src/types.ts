@@ -61,6 +61,8 @@ export interface ReadingMission {
   finishedChapters: Array<{ book: string; chapter: number }>;
   progress: number;
   paused: boolean;
+  /** Trilha de leitura verso a verso interna à missão — independente do histórico geral de navegação. */
+  readHistory: HistoryItem[];
 }
 
 export interface AuthUser {

@@ -1,15 +1,18 @@
-import type { ReadingMission } from '../types';
-import { BOOKS } from './books';
+import type { HistoryItem, ReadingMission, Verse } from '../types';
+import { BOOKS, BOOK_BY_VALUE } from './books';
 
 const MISSIONS_KEY = 'be_missions';
 const ACTIVE_MISSION_KEY = 'be_active_mission';
+const MISSION_READ_HISTORY_LIMIT = 30;
 
 const TOTAL_CHAPTERS = BOOKS.reduce((sum, b) => sum + b.chapters, 0);
 
 export function loadMissions(): ReadingMission[] {
   try {
     const raw = localStorage.getItem(MISSIONS_KEY);
-    return raw ? (JSON.parse(raw) as ReadingMission[]) : [];
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as ReadingMission[];
+    return parsed.map((m) => ({ ...m, readHistory: m.readHistory ?? [] }));
   } catch {
     return [];
   }
@@ -49,7 +52,20 @@ export function createMission(title: string): ReadingMission {
     finishedChapters: [],
     progress: 0,
     paused: false,
+    readHistory: [],
   };
+}
+
+/**
+ * Registra o versículo lido na trilha interna da missão — separada do histórico geral
+ * de navegação. É o que permite retomar exatamente onde parou (ex.: no meio de Salmos 119).
+ */
+export function pushMissionRead(mission: ReadingMission, v: Verse): ReadingMission {
+  const label = BOOK_BY_VALUE.get(v.book)?.label ?? v.book;
+  const ref = `${label} ${v.chapter}:${v.verse}`;
+  const entry: HistoryItem = { ref, book: v.book, book_order: v.book_order, chapter: v.chapter, verse: v.verse, text: v.text, ts: Date.now() };
+  const readHistory = [entry, ...mission.readHistory.filter((h) => h.ref !== ref)].slice(0, MISSION_READ_HISTORY_LIMIT);
+  return { ...mission, readHistory };
 }
 
 /** Progresso 0–100, proporcional aos 1.189 capítulos da Bíblia inteira. */

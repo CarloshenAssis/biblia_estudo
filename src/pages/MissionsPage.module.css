@@ -36,6 +36,13 @@
   gap: 6px;
 }
 
+.readTrail {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
 .historyRow {
   display: flex;
   align-items: center;

@@ -7,6 +7,7 @@ import {
   createMission,
   loadActiveMissionId,
   loadMissions,
+  pushMissionRead,
   saveActiveMissionId,
   saveMissions,
   toggleChapterFinished as toggleChapterFinishedImpl,
@@ -40,6 +41,7 @@ interface AppContextValue {
 
   history: HistoryItem[];
   addHistory: (v: Verse) => void;
+  markMissionRead: (v: Verse) => void;
 
   authUser: AuthUser | null;
   login: (email: string, password: string) => string | null;
@@ -199,6 +201,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [activeMissionId]
   );
 
+  const markMissionRead = useCallback(
+    (v: Verse) => {
+      if (!activeMission || activeMission.paused) return;
+      updateActiveMission((m) => pushMissionRead(m, v));
+    },
+    [activeMission, updateActiveMission]
+  );
+
   const pauseOrResumeMission = useCallback(() => {
     if (!activeMission) return;
     const nextPaused = !activeMission.paused;
@@ -215,6 +225,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       finishedChapters: [],
       progress: 0,
       paused: false,
+      readHistory: [],
     }));
     showToast('Missão reiniciada');
   }, [activeMission, updateActiveMission, showToast]);
@@ -255,6 +266,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       removeFavorite,
       history,
       addHistory,
+      markMissionRead,
       authUser,
       login,
       logout,
@@ -269,7 +281,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [
       theme, toggleTheme, navOpen, openNav, closeNav, toggleNav, moreOpen, toggleMore, closeMore,
       searchOpen, openSearch, closeSearch,
-      toast, showToast, favorites, isFavorite, toggleFavorite, removeFavorite, history, addHistory,
+      toast, showToast, favorites, isFavorite, toggleFavorite, removeFavorite, history, addHistory, markMissionRead,
       authUser, login, logout, missions, activeMission, startMission, pauseOrResumeMission, restartMission,
       toggleChapterFinished, isChapterMarked,
     ]
