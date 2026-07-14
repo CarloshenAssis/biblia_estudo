@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useApp } from '../lib/AppContext';
 import { SearchIcon, StarIcon, MoonIcon, SunIcon } from './Icons';
+import { LogoMark } from './LogoMark';
 import styles from './Header.module.css';
 
 function MoreIcon() {
@@ -33,7 +34,9 @@ export function Header({ variant, simpleTitle, readingCrumb, currentFavorite, on
       {variant === 'home' && (
         <>
           <button className={styles.logoWrap} onClick={() => navigate('/')}>
-            <span className={styles.logoMark}>℞</span>
+            <span className={styles.logoMark}>
+              <LogoMark size={26} />
+            </span>
             <div className={styles.logoStack}>
               <span className={styles.logoLine1}>BÍBLIA</span>
               <span className={styles.logoLine2}>EXPOSITOR</span>
@@ -56,7 +59,7 @@ export function Header({ variant, simpleTitle, readingCrumb, currentFavorite, on
       {variant === 'reading' && readingCrumb && (
         <>
           <button className={styles.logoMarkOnly} onClick={() => navigate('/')}>
-            ℞
+            <LogoMark size={22} />
           </button>
           <button className={styles.crumbChip} onClick={toggleNav}>
             {readingCrumb.book} <span className={styles.chevInline}>⌄</span>
@@ -73,7 +76,9 @@ export function Header({ variant, simpleTitle, readingCrumb, currentFavorite, on
       {variant === 'simple' && (
         <>
           <button className={styles.logoWrap} onClick={() => navigate('/')}>
-            <span className={styles.logoMark}>℞</span>
+            <span className={styles.logoMark}>
+              <LogoMark size={24} />
+            </span>
           </button>
           <div className={styles.simpleTitle}>{simpleTitle}</div>
         </>

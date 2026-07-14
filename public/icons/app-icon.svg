@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect x="0" y="0" width="512" height="512" rx="112" fill="#3B2A1A" />
+
+  <g stroke="#C89D3C" stroke-width="4" stroke-linecap="round" opacity="0.85">
+    <line x1="256" y1="66" x2="256" y2="96" />
+    <line x1="218" y1="76" x2="232" y2="102" />
+    <line x1="294" y1="76" x2="280" y2="102" />
+    <line x1="188" y1="98" x2="210" y2="118" />
+    <line x1="324" y1="98" x2="302" y2="118" />
+    <line x1="168" y1="128" x2="196" y2="140" />
+    <line x1="344" y1="128" x2="316" y2="140" />
+  </g>
+
+  <path d="M248,214 Q158,222 120,266 Q158,306 248,316 Z" fill="#F4EFE4" stroke="#3B2A1A" stroke-width="6" stroke-linejoin="round" />
+  <path d="M264,214 Q354,222 392,266 Q354,306 264,316 Z" fill="#F4EFE4" stroke="#3B2A1A" stroke-width="6" stroke-linejoin="round" />
+
+  <g stroke="#C89D3C" stroke-width="3" stroke-linecap="round" opacity="0.55">
+    <path d="M170,254 Q205,246 236,252" fill="none" />
+    <path d="M170,272 Q205,266 236,270" fill="none" />
+    <path d="M170,290 Q205,286 232,288" fill="none" />
+    <path d="M342,254 Q307,246 276,252" fill="none" />
+    <path d="M342,272 Q307,266 276,270" fill="none" />
+    <path d="M342,290 Q307,286 280,288" fill="none" />
+  </g>
+
+  <rect x="246" y="196" width="20" height="134" rx="8" fill="#C89D3C" />
+
+  <rect x="243" y="108" width="26" height="118" rx="4" fill="#C89D3C" />
+  <rect x="212" y="146" width="88" height="26" rx="4" fill="#C89D3C" />
+
+  <path d="M242,320 L270,320 L270,372 L256,354 L242,372 Z" fill="#C89D3C" />
+</svg>

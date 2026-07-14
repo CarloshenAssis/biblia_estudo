@@ -27,14 +27,14 @@
 }
 
 .logoMark {
-  font-family: var(--font-serif);
-  font-size: 21px;
+  display: flex;
+  align-items: center;
   color: var(--accent);
 }
 
 .logoMarkOnly {
-  font-family: var(--font-serif);
-  font-size: 19px;
+  display: flex;
+  align-items: center;
   color: var(--accent);
   background: none;
   border: none;
