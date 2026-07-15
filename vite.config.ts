@@ -7,7 +7,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'icons/app-icon.svg'],
+      includeAssets: ['favicon.svg', 'icons/app-icon.svg', 'icons/app-icon-full.svg'],
       manifest: {
         name: 'Bíblia Expositor',
         short_name: 'Expositor',
@@ -18,7 +18,7 @@ export default defineConfig({
         display: 'standalone',
         orientation: 'portrait-primary',
         background_color: '#F4EFE4',
-        theme_color: '#3B2A1A',
+        theme_color: '#2A1D12',
         icons: [
           { src: '/icons/icon-48.png', sizes: '48x48', type: 'image/png' },
           { src: '/icons/icon-72.png', sizes: '72x72', type: 'image/png' },
