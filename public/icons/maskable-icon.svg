@@ -2,27 +2,28 @@
   <rect x="0" y="0" width="512" height="512" fill="#2B2013" />
 
   <g stroke="#C9A24E" stroke-width="4" stroke-linecap="round">
-    <line x1="256" y1="112" x2="256" y2="144" />
-    <line x1="220" y1="119" x2="234" y2="150" />
-    <line x1="292" y1="119" x2="278" y2="150" />
-    <line x1="192" y1="140" x2="215" y2="164" />
-    <line x1="320" y1="140" x2="297" y2="164" />
-    <line x1="170" y1="168" x2="200" y2="184" />
-    <line x1="342" y1="168" x2="312" y2="184" />
+    <line x1="256" y1="132" x2="256" y2="162" />
+    <line x1="220" y1="139" x2="234" y2="168" />
+    <line x1="292" y1="139" x2="278" y2="168" />
+    <line x1="192" y1="158" x2="215" y2="180" />
+    <line x1="320" y1="158" x2="297" y2="180" />
+    <line x1="170" y1="184" x2="200" y2="198" />
+    <line x1="342" y1="184" x2="312" y2="198" />
   </g>
 
-  <rect x="244" y="176" width="24" height="86" rx="4" fill="#C9A24E" />
-  <rect x="217" y="208" width="78" height="22" rx="4" fill="#C9A24E" />
+  <rect x="245" y="196" width="22" height="52" rx="4" fill="#C9A24E" />
+  <rect x="222" y="216" width="68" height="18" rx="4" fill="#C9A24E" />
 
-  <path d="M252,290 Q246,278 235,281 Q182,291 158,313 Q182,335 246,346 Q249,320 252,300 Z"
-        fill="#F8F3E6" stroke="#C9A24E" stroke-width="6" stroke-linejoin="round" />
-  <path d="M260,290 Q266,278 277,281 Q330,291 354,313 Q330,335 266,346 Q263,320 260,300 Z"
-        fill="#F8F3E6" stroke="#C9A24E" stroke-width="6" stroke-linejoin="round" />
+  <path d="M172,338 L172,314 Q172,300 192,292 L250,270 L250,330 L192,354 Q172,362 172,338 Z" fill="#F8F3E6" stroke="#C9A24E" stroke-width="5" stroke-linejoin="round" />
+  <path d="M340,338 L340,314 Q340,300 320,292 L262,270 L262,330 L320,354 Q340,362 340,338 Z" fill="#F8F3E6" stroke="#C9A24E" stroke-width="5" stroke-linejoin="round" />
+  <rect x="253" y="268" width="8" height="64" fill="#C9A24E" />
 
   <g stroke="#C9A24E" stroke-width="2" stroke-linecap="round" opacity="0.4">
-    <path d="M202,306 Q220,303 236,305" fill="none" />
-    <path d="M310,306 Q292,303 276,305" fill="none" />
+    <path d="M192,304 L242,286" fill="none" />
+    <path d="M192,318 L242,302" fill="none" />
+    <path d="M320,304 L270,286" fill="none" />
+    <path d="M320,318 L270,302" fill="none" />
   </g>
 
-  <path d="M243,343 L269,346 L267,392 L256,380 L245,392 Z" fill="#C9A24E" />
+  <path d="M245,354 L267,354 L267,394 L256,384 L245,394 Z" fill="#C9A24E" />
 </svg>

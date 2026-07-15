@@ -24,7 +24,7 @@ export function LoginPage() {
   return (
     <div className={styles.wrap}>
       <div className={styles.card}>
-        <img className={styles.logoMark} src="/icons/app-icon.svg?v=4" alt="Bíblia Expositor" width={64} height={64} />
+        <img className={styles.logoMark} src="/icons/app-icon.svg?v=5" alt="Bíblia Expositor" width={64} height={64} />
         <div className={styles.title}>Bíblia Expositor</div>
         <p className={styles.subtitle}>Entre para acessar seus favoritos, histórico e missões de leitura.</p>
 
