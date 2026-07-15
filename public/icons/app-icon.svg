@@ -14,18 +14,18 @@
   <rect x="242" y="150" width="28" height="70" rx="4" fill="#C9A24E" />
   <rect x="212" y="176" width="88" height="24" rx="4" fill="#C9A24E" />
 
-  <path d="M120,336 L120,300 Q120,280 150,268 L246,236 L246,320 L150,352 Q120,362 120,336 Z" fill="#F8F3E6" stroke="#C9A24E" stroke-width="6" stroke-linejoin="round" />
-  <path d="M392,336 L392,300 Q392,280 362,268 L266,236 L266,320 L362,352 Q392,362 392,336 Z" fill="#F8F3E6" stroke="#C9A24E" stroke-width="6" stroke-linejoin="round" />
-  <rect x="250" y="234" width="12" height="90" fill="#C9A24E" />
+  <path d="M256,222 L152,182 Q126,172 126,198 L126,258 Q126,282 152,292 L256,326 Z" fill="#F8F3E6" stroke="#C9A24E" stroke-width="6" stroke-linejoin="round" />
+  <path d="M256,222 L360,182 Q386,172 386,198 L386,258 Q386,282 360,292 L256,326 Z" fill="#F8F3E6" stroke="#C9A24E" stroke-width="6" stroke-linejoin="round" />
+  <rect x="250" y="220" width="12" height="106" fill="#C9A24E" />
 
   <g stroke="#C9A24E" stroke-width="2.5" stroke-linecap="round" opacity="0.45">
-    <path d="M150,286 L228,258" fill="none" />
-    <path d="M150,306 L228,280" fill="none" />
-    <path d="M150,326 L228,302" fill="none" />
-    <path d="M362,286 L284,258" fill="none" />
-    <path d="M362,306 L284,280" fill="none" />
-    <path d="M362,326 L284,302" fill="none" />
+    <path d="M156,206 L240,238" fill="none" />
+    <path d="M156,226 L240,256" fill="none" />
+    <path d="M156,246 L240,274" fill="none" />
+    <path d="M356,206 L272,238" fill="none" />
+    <path d="M356,226 L272,256" fill="none" />
+    <path d="M356,246 L272,274" fill="none" />
   </g>
 
-  <path d="M240,352 L272,352 L272,410 L256,394 L240,410 Z" fill="#C9A24E" />
+  <path d="M240,326 L272,326 L272,384 L256,368 L240,384 Z" fill="#C9A24E" />
 </svg>

@@ -14,20 +14,20 @@
   <rect x="244" y="112" width="24" height="60" rx="4" fill="#C9A24E" />
   <rect x="218" y="134" width="76" height="20" rx="4" fill="#C9A24E" />
 
-  <path d="M148,268 L148,240 Q148,224 172,214 L248,188 L248,258 L172,286 Q148,294 148,268 Z" fill="#F8F3E6" stroke="#C9A24E" stroke-width="5" stroke-linejoin="round" />
-  <path d="M364,268 L364,240 Q364,224 340,214 L264,188 L264,258 L340,286 Q364,294 364,268 Z" fill="#F8F3E6" stroke="#C9A24E" stroke-width="5" stroke-linejoin="round" />
-  <rect x="251" y="186" width="10" height="74" fill="#C9A24E" />
+  <path d="M256,184 L172,150 Q150,141 150,164 L150,214 Q150,235 172,244 L256,278 Z" fill="#F8F3E6" stroke="#C9A24E" stroke-width="5" stroke-linejoin="round" />
+  <path d="M256,184 L340,150 Q362,141 362,164 L362,214 Q362,235 340,244 L256,278 Z" fill="#F8F3E6" stroke="#C9A24E" stroke-width="5" stroke-linejoin="round" />
+  <rect x="251" y="182" width="10" height="96" fill="#C9A24E" />
 
   <g stroke="#C9A24E" stroke-width="2" stroke-linecap="round" opacity="0.45">
-    <path d="M172,228 L232,206" fill="none" />
-    <path d="M172,244 L232,224" fill="none" />
-    <path d="M172,260 L232,242" fill="none" />
-    <path d="M340,228 L280,206" fill="none" />
-    <path d="M340,244 L280,224" fill="none" />
-    <path d="M340,260 L280,242" fill="none" />
+    <path d="M176,172 L244,198" fill="none" />
+    <path d="M176,188 L244,212" fill="none" />
+    <path d="M176,204 L244,226" fill="none" />
+    <path d="M336,172 L268,198" fill="none" />
+    <path d="M336,188 L268,212" fill="none" />
+    <path d="M336,204 L268,226" fill="none" />
   </g>
 
-  <path d="M242,286 L270,286 L270,336 L256,323 L242,336 Z" fill="#C9A24E" />
+  <path d="M242,278 L270,278 L270,328 L256,315 L242,328 Z" fill="#C9A24E" />
 
   <text x="256" y="368" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="25" letter-spacing="5" fill="#C9A24E">BÍBLIA</text>
   <text x="256" y="412" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="42" font-weight="700" letter-spacing="1" fill="#F8F3E6">EXPOSITOR</text>
